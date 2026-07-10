@@ -16,11 +16,15 @@
 
 from dataclasses import dataclass
 
+from .exceptions import TooManyRoles
+
 # @dataclass
 # class Player:
 #     votes: int
+class Role: ...
 
-class Allies: ...
+
+class Allies(Role): ...
 
 
 class Citizen(Allies): ...
@@ -32,7 +36,7 @@ class Mayor(Allies): ...
 class Sheriff(Allies): ...
 
 
-class Enemies: ...
+class Enemies(Role): ...
 
 
 class Mafia(Enemies): ...
@@ -52,16 +56,26 @@ amount_roles = {
 
 def create_role_dict(
         players: int,
-        amount_roles: dict[Allies | Enemies, int]
+        amount_roles: dict[Role, int]
     ) -> dict[Allies | Enemies, int]:
     """
-    Calculates if the amount roles are correct, and there are no imbalances.
+    Calculates if the amount of roles are correct, and there are no imbalances.
+    
+    THROWS: Too Many Roles
     """
+    items = [v for _, v in d.items()]
+    s = 0
+    for item in items:
+        s += item
+
+    if item > players:
+        raise TooManyRoles()
+    
 
 
 def assign_roles(
-        players_name: list[str],
-        amount_roles: dict[Allies | Enemies, int],
+        players_name: list,
+        amount_roles: dict[Role, int],
     ) -> dict[str, Allies | Enemies]:
     """
     Assign the roles at random to the players

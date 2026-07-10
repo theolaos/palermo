@@ -14,23 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from enum import Enum, auto
-from dataclasses import dataclass
-
-from .roles import Role
-
-
-class GamePhase(Enum):
-    LOBBY = auto()
-    NIGHT = auto()
-    DAY_DISCUSSION = auto()
-    VOTING = auto()
-    GAME_OVER = auto()
+class AppState(Enum):
+    MENU = auto()
+    GAME = auto()
 
 
-@dataclass
-class Player:
-    pid: str # player id, id is reserved keyword
-    name: str
-    role: Role = None
-    alive: bool = True
+class ManuPhase(Enum):
+    MAIN_MENU = auto()
+    SETTINGS = auto()
+    NAME_INPUT = auto()
+    ROLES_SETTINGS = auto()
+    

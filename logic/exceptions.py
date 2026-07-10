@@ -14,23 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from enum import Enum, auto
-from dataclasses import dataclass
-
-from .roles import Role
-
-
-class GamePhase(Enum):
-    LOBBY = auto()
-    NIGHT = auto()
-    DAY_DISCUSSION = auto()
-    VOTING = auto()
-    GAME_OVER = auto()
-
-
-@dataclass
-class Player:
-    pid: str # player id, id is reserved keyword
-    name: str
-    role: Role = None
-    alive: bool = True
+class TooManyRoles(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
