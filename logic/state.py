@@ -13,13 +13,3 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-from kivy.app import App
-from kivy.uix.label import Label
-
-class MyApp(App):
-    def build(self):
-        return Label(text="Hello, Kivy!")
-
-if __name__ == "__main__":
-    # MyApp().run()
