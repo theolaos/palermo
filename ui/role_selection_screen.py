@@ -27,10 +27,9 @@ class RoleSelectionScreen(Screen):
         container = self.ids.roles_container
         container.clear_widgets()
         
-
         roles_data = [role.to_dict() for role in roles_list]
         
-        # 3. Create and append the widgets dynamically using Python
+        # create and append the widgets dynamically using python
         for role in roles_data:
             item = RoleItem(
                 role_name=role["role"],
