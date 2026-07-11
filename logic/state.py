@@ -17,7 +17,7 @@
 from enum import Enum, auto
 from dataclasses import dataclass
 
-from .roles import Role
+from .roles import Role, Player
 
 
 class GamePhase(Enum):
@@ -28,9 +28,5 @@ class GamePhase(Enum):
     GAME_OVER = auto()
 
 
-@dataclass
-class Player:
-    pid: str # player id, id is reserved keyword
-    name: str
-    role: Role = None
-    alive: bool = True
+def create_player_dataclass_list(d: dict[str, Role]) -> list[Player]:
+    return [Player(k, v) for k, v in d.items()]

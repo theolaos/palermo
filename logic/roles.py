@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import random
+
 from dataclasses import dataclass
 
 from .exceptions import TooManyRoles
@@ -45,6 +47,14 @@ class Mafia(Enemies): ...
 class Crazy(Enemies): ...
 
 
+@dataclass
+class Player:
+    name: str
+    role: Role
+    alive: bool = True
+    phone_type: str = "Generic Phone"
+
+
 amount_roles = {
     Citizen : 0,
     Mayor : 0,
@@ -54,29 +64,59 @@ amount_roles = {
 }
 
 
-def create_role_dict(
+def default_role_dict(
         players: int,
         amount_roles: dict[Role, int]
-    ) -> dict[Allies | Enemies, int]:
-    """
-    Calculates if the amount of roles are correct, and there are no imbalances.
+    ) -> None:
     
-    THROWS: Too Many Roles
+    mafia = 2 if players < 10 else int(players*0.2)
+    sheriff = 1 if players < 10 else int(players*0.15)
+
+    amount_roles.update({Mafia : mafia})
+    amount_roles.update({Sheriff : sheriff})
+    amount_roles.update({Citizen : players - mafia - sheriff})
+
+
+def verify_role_dict(
+        players: int,
+        amount_roles: dict[Role, int]
+    ) -> None:
     """
-    items = [v for _, v in d.items()]
+    Verifies if the amount of roles are correct, and there are no imbalances.
+    
+    THROWS: TooManyRoles() or UnBalanced()
+    """
+    items = [(k, v) for k, v in d.items()]
     s = 0
-    for item in items:
+    for role, item in items:
         s += item
 
+    s_mafia = amount_roles[Mafia]
+    
     if item > players:
         raise TooManyRoles()
-    
+
+    if s_mafia > players*0.5:
+        raise UnBalanced()
 
 
 def assign_roles(
         players_name: list,
         amount_roles: dict[Role, int],
-    ) -> dict[str, Allies | Enemies]:
+        rng=None,
+    ) -> dict[str, Role]:
     """
     Assign the roles at random to the players
     """
+
+    # Assuming that the amount_roles are verified
+    role_list = []
+
+    for k, v in d.items():
+        role_list.extend([k]*v)
+
+    rand = rng or random
+
+    rand.shuffle(role_list)
+
+    return dict(zip(players_name, role_list))
