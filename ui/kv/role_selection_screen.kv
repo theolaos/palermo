@@ -38,27 +38,12 @@
             do_scroll_y: True
 
             BoxLayout:
+                id: roles_container
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height  # Critical: Automatically matches total height of items
                 padding: 10
                 spacing: 10
-
-                # Populating the list with sample roles
-                RoleItem:
-                    role_name: "Detective"
-                    short_desc: "Find the hidden clues."
-                    long_desc: "Detailed Description: The Detective can inspect one player per round to discover their true alignment. Use this power wisely!"
-                
-                RoleItem:
-                    role_name: "Medic"
-                    short_desc: "Save your teammates."
-                    long_desc: "Detailed Description: The Medic protects one player from elimination each night cycle. You cannot protect yourself twice in a row."
-
-                RoleItem:
-                    role_name: "Infiltrator"
-                    short_desc: "Blend into the crowd."
-                    long_desc: "Detailed Description: The Infiltrator can disrupt communication networks once per match, scrambling chat logs for 30 seconds."
 
 
 # --- CUSTOM ROLE ITEM TEMPLATE ---
