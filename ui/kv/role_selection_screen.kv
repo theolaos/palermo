@@ -1,0 +1,147 @@
+<RoleSelectionScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        # --- HEADER BAR ---
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            padding: [10, 5, 10, 5]
+            canvas.before:
+                Color:
+                    rgba: (0.15, 0.15, 0.15, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: "<"
+                font_size: '22sp'
+                size_hint_x: 0.15
+                on_release: 
+                    root.manager.transition.direction = 'right'
+                    root.manager.current = 'main_menu'
+
+            Label:
+                text: "Choose roles"
+                font_size: '20sp'
+                bold: True
+                size_hint_x: 0.70
+                halign: 'center'
+            
+            Widget:
+                size_hint_x: 0.15
+
+        # --- SCROLLABLE LIST AREA ---
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height  # Critical: Automatically matches total height of items
+                padding: 10
+                spacing: 10
+
+                # Populating the list with sample roles
+                RoleItem:
+                    role_name: "Detective"
+                    short_desc: "Find the hidden clues."
+                    long_desc: "Detailed Description: The Detective can inspect one player per round to discover their true alignment. Use this power wisely!"
+                
+                RoleItem:
+                    role_name: "Medic"
+                    short_desc: "Save your teammates."
+                    long_desc: "Detailed Description: The Medic protects one player from elimination each night cycle. You cannot protect yourself twice in a row."
+
+                RoleItem:
+                    role_name: "Infiltrator"
+                    short_desc: "Blend into the crowd."
+                    long_desc: "Detailed Description: The Infiltrator can disrupt communication networks once per match, scrambling chat logs for 30 seconds."
+
+
+# --- CUSTOM ROLE ITEM TEMPLATE ---
+<RoleItem>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: 80  # Default collapsed height
+    on_touch_down: root.toggle_expand(args[1])
+    
+    canvas.before:
+        Color:
+            rgba: (0.2, 0.2, 0.2, 1) if not root.is_expanded else (0.25, 0.25, 0.25, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    # Main Row (Image, Text, Counter)
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: 80
+        padding: 5
+        spacing: 10
+
+        # Left: Picture Placeholder (Using an Image widget)
+        Image:
+            source: 'images/role_placeholder.png'  # Replace with actual image path or standard fallback
+            size_hint_x: 0.2
+            allow_stretch: True
+
+        # Middle: Text Info
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5
+            alignment: 'left'
+            
+            Label:
+                text: root.role_name
+                font_size: '18sp'
+                bold: True
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Label:
+                text: root.short_desc
+                font_size: '13sp'
+                color: (0.7, 0.7, 0.7, 1)
+                text_size: self.size
+                halign: 'left'
+                valign: 'top'
+
+        # Right: Counter (- Number +)
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_x: 0.3
+            spacing: 5
+            padding: [0, 15, 0, 15] # Centers the buttons vertically
+
+            Button:
+                id: minus_btn
+                text: "-"
+                font_size: '18sp'
+                on_release: root.decrement()
+
+            Label:
+                text: str(root.count)
+                font_size: '16sp'
+                bold: True
+
+            Button:
+                id: plus_btn
+                text: "+"
+                font_size: '18sp'
+                on_release: root.increment()
+
+    # Expandable Description Container
+    Label:
+        id: extra_desc
+        text: ""
+        font_size: '14sp'
+        text_size: self.width - 20, None
+        size_hint_y: None
+        height: self.texture_size[1] if root.is_expanded else 0
+        padding: [10, 10]
+        halign: 'left'
+        valign: 'top'

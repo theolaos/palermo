@@ -1,0 +1,66 @@
+# palermo, an automatic narrator to play with all of your buddies
+# Copyright (C) 2026  theolaos
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+<MainMenuScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 40
+        spacing: 20
+
+        Label:
+            text: "Palermo"
+            font_size: '36sp'
+            bold: True
+            size_hint_y: 0.2
+
+        # Pushes the button toward the middle/bottom of the screen
+        Widget:
+            size_hint_y: 0.4
+
+        Button:
+            text: "PLAY"
+            font_size: '24sp'
+            size_hint_y: 0.15
+            background_color: (0.2, 0.6, 1, 1) # Optional: light blue color
+            on_release: 
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'role_selection_screen'
+
+
+        Button:
+            text: "NETWORK"
+            font_size: '20sp'
+            size_hint_y: 0.12
+            on_release: print("Credits pressed")
+
+
+        Button:
+            text: "SETTINGS"
+            font_size: '20sp'
+            size_hint_y: 0.12
+            # You can link this to a settings screen later
+            on_release: print("Settings pressed")
+
+
+        Button:
+            text: "CREDITS"
+            font_size: '20sp'
+            size_hint_y: 0.12
+            on_release: print("Credits pressed")
+
+        Widget:
+            size_hint_y: 0.4

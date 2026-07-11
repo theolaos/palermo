@@ -14,13 +14,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from kivy.app import App
-from kivy.uix.label import Label
+from kivy.config import Config
 
-class MyApp(App):
+# Set the window width and height to match a standard phone aspect ratio (e.g., 360x640)
+scalar = 1.5
+Config.set('graphics', 'width', str(int(360*scalar)))
+Config.set('graphics', 'height', str(int(640*scalar)))
+Config.set('graphics', 'resizable', False)
+
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager
+
+from ui.main_menu_screen import MainMenuScreen
+from ui.role_selection_screen import RoleSelectionScreen
+
+class GameScreenManager(ScreenManager): ...
+
+class MobileApp(App):
     def build(self):
-        return Label(text="Hello, Kivy!")
+        return GameScreenManager()
+
 
 if __name__ == "__main__":
-    # MyApp().run()
-    ...
+    MobileApp().run()

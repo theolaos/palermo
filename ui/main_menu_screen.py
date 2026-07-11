@@ -14,27 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .roles import Player
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen
 
+class MainMenuScreen(Screen): ...
 
-def resolve_lobby(names: list[str]) -> list[Player]:
-    """
-    A lobby is basically the time before the game starts and after everyone gave their names to the system.
-    """
-    
-
-
-def resolve_night():
-    print("")
-
-
-def resolve_who_won():
-    alive = state.alive_players()
-    mafia_alive = sum(1 for p in alive if p.role == Role.MAFIA) # TODO
-    town_alive = sum(1 for p in alive if p.role != Role.MAFIA)
- 
-    if mafia_alive == 0:
-        return Team.TOWN
-    if mafia_alive >= town_alive:
-        return Team.MAFIA
-    return None
