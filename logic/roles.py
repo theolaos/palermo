@@ -27,25 +27,75 @@ class Role: ...
 
 
 class Town(Role): ...
-
-
-class Citizen(Town): ...
-
-
-class Mayor(Town): ...
-
-
-class Sheriff(Town): ...
-
-
 class Mafia(Role): ...
 
 
-class Killer(Mafia): ...
+class Citizen(Town):
+    role = "Πολίτης"
+    short = "Ένας απλός κάτοικος της πόλης."
+    long = "Δεν έχεις ειδικές δυνάμεις τη νύχτα, αλλά η ψήφος σου την ημέρα είναι καθοριστική για να βρεθούν οι ένοχοι."
+
+    @staticmethod
+    def to_dict():
+        return {
+            "role": Citizen.role,
+            "short": Citizen.short,
+            "long": Citizen.long
+        }
+
+class Mayor(Town):
+    role = "Δήμαρχος"
+    short = "Ο ηγέτης της πόλης."
+    long = "Μπορείς να αποκαλύψεις την ταυτότητά σου δημόσια. Όταν το κάνεις, η ψήφος σου μετράει διπλή στις ψηφοφορίες."
+
+    @staticmethod
+    def to_dict():
+        return {
+            "role": Mayor.role,
+            "short": Mayor.short,
+            "long": Mayor.long
+        }
+
+class Sheriff(Town):
+    role = "Αστυνομικός"
+    short = "Ο προστάτης του νόμου."
+    long = "Κάθε νύχτα μπορείς να ανακρίνεις έναν παίκτη για να μάθεις αν ανήκει στη Μαφία ή αν είναι αθώος."
+
+    @staticmethod
+    def to_dict():
+        return {
+            "role": Sheriff.role,
+            "short": Sheriff.short,
+            "long": Sheriff.long
+        }
 
 
-class Crazy(Mafia): ...
+class Killer(Mafia):
+    role = "Δολοφόνος"
+    short = "Το εκτελεστικό όργανο του εγκλήματος."
+    long = "Κάθε νύχτα επιλέγεις έναν στόχο μαζί με την υπόλοιπη Μαφία για να τον βγάλετε από το παιχνίδι."
 
+    @staticmethod
+    def to_dict():
+        return {
+            "role": Killer.role,
+            "short": Killer.short,
+            "long": Killer.long
+        }
+
+
+class Crazy(Mafia):
+    role = "Τρέλα"
+    short = "Ο παίκτης που θέλει να καταδικαστεί."
+    long = "Ο στόχος σου είναι να κάνεις τους άλλους να σε υποψιαστούν και να σε ψηφίσουν για να σε βγάλουν από το παιχνίδι. Αν σε ψηφίσουν, κερδίζεις!"
+
+    @staticmethod
+    def to_dict():
+        return {
+            "role": Crazy.role,
+            "short": Crazy.short,
+            "long": Crazy.long
+        }
 
 @dataclass
 class Player:
@@ -59,10 +109,11 @@ amount_roles = {
     Citizen : 0,
     Mayor : 0,
     Sheriff : 0,
-    Mafia : 0,
+    Killer : 0,
     Crazy : 0
 }
 
+roles_list = [k for k, _  in amount_roles.items()] 
 
 def default_role_dict(
         players: int,

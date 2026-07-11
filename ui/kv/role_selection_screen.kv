@@ -1,3 +1,19 @@
+# palermo, an automatic narrator to play with all of your buddies
+# Copyright (C) 2026  theolaos
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 <RoleSelectionScreen>:
     BoxLayout:
         orientation: 'vertical'
@@ -20,7 +36,7 @@
                 size_hint_x: 0.15
                 on_release: 
                     root.manager.transition.direction = 'right'
-                    root.manager.current = 'main_menu'
+                    root.manager.current = 'main_menu_screen'
 
             Label:
                 text: "Choose roles"
@@ -44,7 +60,17 @@
                 height: self.minimum_height  # Critical: Automatically matches total height of items
                 padding: 10
                 spacing: 10
-
+        
+        Button:
+            text: "NEXT"
+            font_size: '20sp'
+            bold: True
+            size_hint: (0.9, 0.08)  # 90% of screen width, 8% of screen height
+            pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
+            background_color: (0.2, 0.8, 0.4, 1) # Green color accent
+            on_release: 
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'input_players_amount_screen'
 
 # --- CUSTOM ROLE ITEM TEMPLATE ---
 <RoleItem>:

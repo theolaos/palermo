@@ -16,48 +16,28 @@
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, BooleanProperty
+
+from logic import *
 
 class RoleSelectionScreen(Screen):
     def on_enter(self):
         """ This method triggers automatically when the screen displays. """
-        # 1. Clear any old items so they don't duplicate if you leave and come back
+        # clear any old items so they dont duplicate if you leave and come back
         container = self.ids.roles_container
         container.clear_widgets()
         
-        # 2. Your dynamic data source (could be fetched from a file or server later)
-        roles_data = [
-            {
-                "name": "Detective", 
-                "short": "Find the hidden clues.", 
-                "long": "Detailed Description: Inspect one player per round to discover their alignment."
-            },
-            {
-                "name": "Medic", 
-                "short": "Save your teammates.", 
-                "long": "Detailed Description: Protects one player from elimination each night cycle."
-            },
-            {
-                "name": "Infiltrator", 
-                "short": "Blend into the crowd.", 
-                "long": "Detailed Description: Disrupt communication networks once per match."
-            },
-            {
-                "name": "Bodyguard", 
-                "short": "Protect at all costs.", 
-                "long": "Detailed Description: Sacrifices themselves if their target is attacked."
-            }
-        ]
+
+        roles_data = [role.to_dict() for role in roles_list]
         
         # 3. Create and append the widgets dynamically using Python
         for role in roles_data:
             item = RoleItem(
-                role_name=role["name"],
+                role_name=role["role"],
                 short_desc=role["short"],
                 long_desc=role["long"]
             )
             container.add_widget(item)
-
 
 
 class RoleItem(BoxLayout):
@@ -66,10 +46,8 @@ class RoleItem(BoxLayout):
     role_name = StringProperty("")
     short_desc = StringProperty("")
     long_desc = StringProperty("")
+    is_expanded = BooleanProperty(False)    
     
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.is_expanded = False
 
     def toggle_expand(self, touch):
         # Check if the touch actually happened inside this specific widget
@@ -88,8 +66,10 @@ class RoleItem(BoxLayout):
                 self.ids.extra_desc.text = ""
                 self.is_expanded = False
 
+
     def increment(self):
         self.count += 1
+
 
     def decrement(self):
         if self.count > 0:

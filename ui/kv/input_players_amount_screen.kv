@@ -1,0 +1,49 @@
+# palermo, an automatic narrator to play with all of your buddies
+# Copyright (C) 2026  theolaos
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+<InputPlayersAmountScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        # --- HEADER BAR ---
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            padding: [10, 5, 10, 5]
+            canvas.before:
+                Color:
+                    rgba: (0.15, 0.15, 0.15, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: "<"
+                font_size: '22sp'
+                size_hint_x: 0.15
+                on_release: 
+                    root.manager.transition.direction = 'left'
+                    root.manager.current = 'role_selection_screen'
+
+            Label:
+                text: "Assigning Roles"
+                font_size: '20sp'
+                bold: True
+                size_hint_x: 0.70
+                halign: 'center'
+            
+            Widget:
+                size_hint_x: 0.15

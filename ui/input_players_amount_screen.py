@@ -14,14 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#:include ui/kv/main_menu_screen.kv
-#:include ui/kv/role_selection_screen.kv
-#:include ui/kv/input_players_amount_screen.kv
 
+from kivy.uix.screenmanager import Screen
 
-<GameScreenManager>:
-    MainMenuScreen:
-        name: 'main_menu_screen'
-    RoleSelectionScreen:
-        name: 'role_selection_screen'
-
+class InputPlayersAmountScreen(Screen): ...

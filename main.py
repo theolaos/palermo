@@ -29,6 +29,8 @@ from kivy.uix.screenmanager import ScreenManager
 
 from ui.main_menu_screen import MainMenuScreen
 from ui.role_selection_screen import RoleSelectionScreen
+from ui.input_players_amount_screen import InputPlayersAmountScreen
+
 
 class GameScreenManager(ScreenManager): ...
 
