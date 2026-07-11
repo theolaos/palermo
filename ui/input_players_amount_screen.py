@@ -17,4 +17,15 @@
 
 from kivy.uix.screenmanager import Screen
 
-class InputPlayersAmountScreen(Screen): ...
+class InputPlayersAmountScreen(Screen):
+    def validate_player_count(self, text):
+        # Grab the TextInput widget using its ID
+        input_field = self.ids.player_count_input
+        
+        try:
+            value = int(text)
+            if value < 4:
+                input_field.text = "4"
+        except ValueError:
+            # If the field was left entirely blank, default it to 4
+            input_field.text = "4"

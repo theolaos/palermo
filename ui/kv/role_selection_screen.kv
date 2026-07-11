@@ -57,8 +57,9 @@
                 id: roles_container
                 orientation: 'vertical'
                 size_hint_y: None
-                height: self.minimum_height  # Critical: Automatically matches total height of items
-                padding: 10
+                height: self.minimum_height
+                on_minimum_height: self.height = args[1]
+                padding: [10, 10, 10, 80]
                 spacing: 10
         
         Button:
@@ -76,7 +77,7 @@
 <RoleItem>:
     orientation: 'vertical'
     size_hint_y: None
-    height: 80  # Default collapsed height
+    height: dp(80)  # Default collapsed height
     on_touch_down: root.toggle_expand(args[1])
     
     canvas.before:
@@ -90,7 +91,7 @@
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None
-        height: 80
+        height: dp(80)
         padding: 5
         spacing: 10
 

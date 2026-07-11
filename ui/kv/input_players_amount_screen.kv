@@ -44,14 +44,45 @@
                 bold: True
                 size_hint_x: 0.70
                 halign: 'center'
-            
-            Widget:
-                size_hint_x: 0.15
 
-        # --- MAIN CONTENT AREA (Takes up the remaining 90%) ---
         BoxLayout:
             orientation: 'vertical'
             size_hint_y: 0.9
+            padding: '20dp'
+            spacing: '10dp'
             
             Label:
-                text: "Your main content (inputs, player counts, etc.) goes here!"
+                text: "Enter Number of Players:"
+                font_size: '18sp'
+                size_hint_y: None
+                height: '40dp'
+            
+            TextInput:
+                id: player_count_input
+                text: "4"                  # Default starting value
+                multiline: False           # Keeps it to a single line
+                input_filter: 'int'        # Strictly allows ONLY integers (numbers)
+                font_size: '24sp'
+                halign: 'center'
+                size_hint: (None, None)
+                size: ('150dp', '50dp')    # Gives it a nice, button-sized box
+                pos_hint: {'center_x': 0.5} # Centers it horizontally
+                # Triggers validation when the user finishes typing
+                on_text_validate: root.validate_player_count(self.text)
+                # Also triggers validation if they tap away from the input field
+                on_focus: if not self.focus: root.validate_player_count(self.text)
+            
+            Widget:
+                size_hint_y: 0.5
+
+        Button:
+            text: "NEXT"
+            font_size: '20sp'
+            bold: True
+            size_hint: (0.9, 0.08)  # 90% of screen width, 8% of screen height
+            pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
+            background_color: (0.2, 0.8, 0.4, 1) # Green color accent
+            on_release:
+                print("lol")
+                # root.manager.transition.direction = 'left'
+                # root.manager.current = 'input_players_amount_screen'

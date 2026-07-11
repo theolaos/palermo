@@ -18,7 +18,7 @@ from kivy.config import Config
 
 # Set the window width and height to match a standard phone aspect ratio (e.g., 360x640)
 scalar = 1.5
-Config.set('graphics', 'width', str(int(360*scalar)))
+Config.set('graphics', 'width', str(int(340*scalar)))
 Config.set('graphics', 'height', str(int(640*scalar)))
 Config.set('graphics', 'resizable', False)
 

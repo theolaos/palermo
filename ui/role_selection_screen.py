@@ -17,6 +17,8 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty
+from kivy.metrics import dp
+
 
 from logic import *
 
@@ -57,11 +59,11 @@ class RoleItem(BoxLayout):
             
             # Toggle the expansion state
             if not self.is_expanded:
-                self.height = 180  # Expanded height
+                self.height = dp(180)  # Expanded height
                 self.ids.extra_desc.text = self.long_desc
                 self.is_expanded = True
             else:
-                self.height = 80   # Collapsed height
+                self.height = dp(80)   # Collapsed height
                 self.ids.extra_desc.text = ""
                 self.is_expanded = False
 
