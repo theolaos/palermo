@@ -1,0 +1,82 @@
+# palermo, an automatic narrator to play with all of your buddies
+# Copyright (C) 2026  theolaos
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+<NameRoleAssignScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        Carousel:
+            id: my_carousel
+            direction: 'right'
+            loop: False
+
+<PerScreen>:
+    orientation: 'vertical'
+
+    # --- HEADER BAR ---
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        padding: [10, 5, 10, 5]
+
+        canvas.before:
+            Color:
+                rgba: (0.15, 0.15, 0.15, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Button:
+            text: "<"
+            font_size: '22sp'
+            size_hint_x: 0.15
+
+        Label:
+            text: "Choose roles"
+            font_size: '20sp'
+            bold: True
+            size_hint_x: 0.70
+            halign: 'center'
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        TextInput:
+            id: player_count_input
+            text: "hello"
+            multiline: False
+            input_filter: 'int'
+            font_size: '30sp'
+            halign: 'center'
+            valign: 'middle'
+            size_hint: (1, 1) # Let it smoothly occupy the assigned 30% right area
+        
+            background_normal: ""
+            background_active: ""
+            background_color: (0.1, 0.1, 0.15, 1)
+            foreground_color: (1, 1, 1, 1)
+
+        
+        # Label:
+
+    Button:
+        text: "NEXT"
+        font_size: '20sp'
+        bold: True
+        size_hint: (0.9, 0.08)  # 90% of screen width, 8% of screen height
+        pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
+        background_color: (0.2, 0.8, 0.4, 1) # Green color accent

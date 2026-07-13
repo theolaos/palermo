@@ -14,17 +14,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen
 
-#:include ui/kv/main_menu_screen.kv
-#:include ui/kv/role_selection_screen.kv
-#:include ui/kv/name_role_assign_screen.kv
+from logic import *
 
 
-<GameScreenManager>:
-    MainMenuScreen:
-        name: 'main_menu_screen'
-    RoleSelectionScreen:
-        name: 'role_selection_screen'
-    NameRoleAssignScreen
-        name: 'name_role_assign_screen'
+class PerScreen(BoxLayout):
+    def __init__(self, carousel, **kwargs):
+        super().__init__(**kwargs)
+        self.carousel = carousel
 
+
+class NameRoleAssignScreen(Screen):
+    def on_enter(self):
+        screen_carousel = self.ids.my_carousel
+        screen_carousel.clear_widgets()
+
+        # name_dict = {}
+        # for role in roles:
+        for i in range(Data.players):
+            screen_carousel.add_widget(
+                PerScreen(carousel=screen_carousel)
+            )
