@@ -18,7 +18,7 @@ import random
 
 from dataclasses import dataclass
 
-from .exceptions import TooManyRoles, UnBalanced
+from .exceptions import TooManyRoles, UnBalanced, NotEnoughRoles
 
 # @dataclass
 # class Player:
@@ -98,6 +98,7 @@ class Data:
         Snitch : 0,
         Crazy : 0
     }
+    assigned_roles = {}
 
 roles_list = [k for k, _  in Data.amount_roles.items()] 
 
@@ -145,6 +146,33 @@ def verify_role_dict(
 
     if s_mafia > players*0.5:
         raise UnBalanced(f"Registered Players: {players}, Role Killers: {s_mafia}")
+
+
+def enough_roles(players, amount_roles) -> None:
+    """
+    Are there enough roles?
+
+    THROWS: NotEnoughRoles()
+    """
+    items = [(k, v) for k, v in amount_roles.items()]
+    s = 0
+    for role, item in items:
+        s += item
+
+    if s < players:
+        raise NotEnoughRoles(f"Registered Players: {players}, Role Players: {s}")
+
+
+def add_citizens(players, amount_roles) -> None:
+    """
+    Adds Citizens to the roles, because there were not enough.
+    """
+    items = [(k, v) for k, v in amount_roles.items()]
+    s = 0
+    for role, item in items:
+        s += item
+
+    amount_roles[Citizen] += players - s 
 
 
 def assign_roles(

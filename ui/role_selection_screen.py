@@ -82,10 +82,10 @@ class RoleItem(BoxLayout):
             verify_role_dict(Data.players, temp)
             Data.amount_roles[self.role_class] += 1
             self.count = Data.amount_roles[self.role_class]
-        except TooManyRoles as e:
-            print("Whoops TooManyRoles")
         except UnBalanced as e:
             print("Whoops UnBalanced")
+        except NotEnoughRoles as e:
+            print("Whoops NotEnoughRoles")
 
 
     def decrement(self):
@@ -125,3 +125,17 @@ class RoleSelectionScreen(Screen):
         default_role_dict(Data.players, Data.amount_roles)
         for role_item in self.role_item_list:
             role_item.sync()
+
+
+    def press_next_button(self):
+        try:
+            enough_roles(Data.players, Data.amount_roles)
+        except NotEnoughRoles as e:
+            print("Whoops NotEnoughRoles")
+            add_citizens(Data.players, Data.amount_roles)
+            
+        for role_item in self.role_item_list:
+            role_item.sync()
+
+        self.manager.transition.direction = 'up'
+        self.manager.current = 'name_role_assign_screen'
