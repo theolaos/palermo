@@ -37,6 +37,8 @@
             size_hint_y: 0.15
             background_color: (0.2, 0.6, 1, 1) # Optional: light blue color
             on_release: 
+                root.default_roles()
+                
                 root.manager.transition.direction = 'left'
                 root.manager.current = 'role_selection_screen'
 

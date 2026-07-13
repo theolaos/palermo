@@ -18,7 +18,7 @@ import random
 
 from dataclasses import dataclass
 
-from .exceptions import TooManyRoles
+from .exceptions import TooManyRoles, UnBalanced
 
 # @dataclass
 # class Player:
@@ -88,27 +88,35 @@ class Player:
     alive: bool = True
     phone_type: str = "Generic Phone"
 
+class Data:
+    players = 4
+    amount_roles = {
+        Citizen : 0,
+        Mayor : 0,
+        Sheriff : 0,
+        Killer : 0,
+        Snitch : 0,
+        Crazy : 0
+    }
 
-amount_roles = {
-    Citizen : 0,
-    Mayor : 0,
-    Sheriff : 0,
-    Killer : 0,
-    Snitch : 0,
-    Crazy : 0
-}
-
-roles_list = [k for k, _  in amount_roles.items()] 
+roles_list = [k for k, _  in Data.amount_roles.items()] 
 
 def default_role_dict(
         players: int,
         amount_roles: dict[Role, int]
     ) -> None:
     
-    mafia = 2 if players < 10 else int(players*0.2)
+    mafia = 0
+    if players < 5:
+        mafia = 1
+    elif players < 10:
+        mafia = 2
+    else:
+        mafia = int(players*0.17)
+
     sheriff = 1 if players < 10 else int(players*0.15)
 
-    amount_roles.update({Mafia : mafia})
+    amount_roles.update({Killer : mafia})
     amount_roles.update({Sheriff : sheriff})
     amount_roles.update({Citizen : players - mafia - sheriff})
 
@@ -122,18 +130,18 @@ def verify_role_dict(
     
     THROWS: TooManyRoles() or UnBalanced()
     """
-    items = [(k, v) for k, v in d.items()]
+    items = [(k, v) for k, v in amount_roles.items()]
     s = 0
     for role, item in items:
         s += item
 
-    s_mafia = amount_roles[Mafia]
+    s_mafia = amount_roles[Killer]
     
-    if item > players:
-        raise TooManyRoles()
+    if s > players:
+        raise TooManyRoles(f"Registered Players: {players}, Role Players: {s}")
 
     if s_mafia > players*0.5:
-        raise UnBalanced()
+        raise UnBalanced(f"Registered Players: {players}, Role Killers: {s_mafia}")
 
 
 def assign_roles(

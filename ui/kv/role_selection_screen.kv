@@ -45,8 +45,14 @@
                 size_hint_x: 0.70
                 halign: 'center'
             
-            Widget:
+            Button:
+                text: "🔄"
+                font_name: "ui/fonts/twemoji.ttf"
+                font_size: '35sp'
                 size_hint_x: 0.15
+                background_color: (0.4, 0.4, 0.6, 1)
+                on_release: 
+                    root.default_roles()
 
         # --- SCROLLABLE LIST AREA ---
         ScrollView:
@@ -127,7 +133,7 @@
 
             TextInput:
                 id: player_count_input
-                text: "4"
+                text: root.get_text()
                 multiline: False
                 input_filter: 'int'
                 font_size: '18sp'

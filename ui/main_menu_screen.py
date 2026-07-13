@@ -17,5 +17,9 @@
 # from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
-class MainMenuScreen(Screen): ...
+from logic import *
+
+class MainMenuScreen(Screen):
+    def default_roles(self):
+        default_role_dict(Data.players, Data.amount_roles)
 

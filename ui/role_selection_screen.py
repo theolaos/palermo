@@ -29,11 +29,18 @@ class InputAmountPlayers(BoxLayout):
         
         try:
             value = int(text)
+            Data.players = value
             if value < 4:
                 input_field.text = "4"
+                Data.players = 4
         except ValueError:
             # If the field was left entirely blank, default it to 4
             input_field.text = "4"
+            Data.players = 4
+
+        
+    def get_text(self) -> str:
+        return str(Data.players)
 
 
 class RoleItem(BoxLayout):
@@ -68,20 +75,27 @@ class RoleItem(BoxLayout):
 
 
     def increment(self):
-        temp = roles_list.copy()
-        roles_list[self.role_class] += 1
+        temp = Data.amount_roles.copy()
+        temp[self.role_class] += 1
 
         try:
-            
+            verify_role_dict(Data.players, temp)
             self.count += 1
-        except TooManyRoles:
-
-        except UnBalanced:
+            Data.amount_roles[self.role_class] += 1
+        except TooManyRoles as e:
+            print("Whoops TooManyRoles")
+        except UnBalanced as e:
+            print("Whoops UnBalanced")
 
 
     def decrement(self):
         if self.count > 0:
             self.count -= 1
+            Data.amount_roles[self.role_class] -= 1
+
+
+    def sync(self):
+        self.count = Data.amount_roles[self.role_class]
 
 
 class RoleSelectionScreen(Screen):
@@ -94,12 +108,23 @@ class RoleSelectionScreen(Screen):
         container.add_widget(InputAmountPlayers())
         
         # create and append the widgets dynamically using python
+        self.role_item_list = []
         for role in roles_list:
             item = RoleItem(
                 role_class=role,
+                count=Data.amount_roles[role],
                 emoji=role.data["emoji"],
                 role_name=role.data["role"],
                 short_desc=role.data["short"],
                 long_desc=role.data["long"]
             )
+            self.role_item_list.append(item)
             container.add_widget(item)
+
+
+    def default_roles(self):
+        default_role_dict(Data.players, Data.amount_roles)
+        for role_item in self.role_item_list:
+            role_item.sync()
+            
+
