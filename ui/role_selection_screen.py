@@ -80,8 +80,8 @@ class RoleItem(BoxLayout):
 
         try:
             verify_role_dict(Data.players, temp)
-            self.count += 1
             Data.amount_roles[self.role_class] += 1
+            self.count = Data.amount_roles[self.role_class]
         except TooManyRoles as e:
             print("Whoops TooManyRoles")
         except UnBalanced as e:
@@ -90,9 +90,8 @@ class RoleItem(BoxLayout):
 
     def decrement(self):
         if self.count > 0:
-            self.count -= 1
             Data.amount_roles[self.role_class] -= 1
-
+            self.count = Data.amount_roles[self.role_class]
 
     def sync(self):
         self.count = Data.amount_roles[self.role_class]

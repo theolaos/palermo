@@ -106,6 +106,9 @@ def default_role_dict(
         amount_roles: dict[Role, int]
     ) -> None:
     
+    for role, _ in Data.amount_roles.items():
+        Data.amount_roles[role] = 0
+
     mafia = 0
     if players < 5:
         mafia = 1
