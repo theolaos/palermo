@@ -47,6 +47,8 @@
             text: "<"
             font_size: '22sp'
             size_hint_x: 0.15
+            
+            on_release: root.top_button()
 
         Label:
             text: "Role Assignment"
@@ -76,14 +78,15 @@
             background_color: (0.1, 0.1, 0.15, 1)
             foreground_color: (1, 1, 1, 1)
 
-
     Button:
-        text: "NEXT"
+        # NEXT button / START GAME button
+        text: root.bottom_button_text
         font_size: '20sp'
         bold: True
         size_hint: (1, 0.08)
         pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
         background_color: (0.2, 0.8, 0.4, 1) # Green color accent
+        on_release: root.bottom_button()
 
 
 <PressableLabel>:

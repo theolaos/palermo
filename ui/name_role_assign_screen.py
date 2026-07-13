@@ -18,6 +18,8 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, ListProperty, BooleanProperty
+from kivy.app import App
+
 
 from logic import *
 
@@ -51,9 +53,10 @@ class PressableLabel(BoxLayout):
 
 
 class PerScreen(BoxLayout):
-    prev_screen = BooleanProperty(False)
-    next_screen = BooleanProperty(False) 
+    has_prev = BooleanProperty(False)
+    has_next = BooleanProperty(False) 
     bg_color1 = ListProperty([0.15, 0.15, 0.15, 1]) # Default Dark Gray
+    bottom_button_text = StringProperty("NEXT")
 
     def __init__(self, carousel, **kwargs):
         super().__init__(**kwargs)
@@ -64,6 +67,24 @@ class PerScreen(BoxLayout):
         )
 
 
+    def bottom_button(self):
+        if self.has_next:
+            self.carousel.load_next()
+        else:
+            root = App.get_running_app().root 
+            root.transition.direction = 'up'
+            root.current = 'name_role_assign_screen'
+
+    
+    def top_button(self):
+        if self.has_prev:
+            self.carousel.load_previous()
+        else:
+            root = App.get_running_app().root 
+            root.transition.direction = 'down'
+            root.current = 'role_selection_screen'
+
+
 class NameRoleAssignScreen(Screen):
     def on_enter(self):
         screen_carousel = self.ids.my_carousel
@@ -72,6 +93,16 @@ class NameRoleAssignScreen(Screen):
         # name_dict = {}
         # for role in roles:
         for i in range(Data.players):
-            screen_carousel.add_widget(
-                PerScreen(carousel=screen_carousel)
-            )
+            has_prev = i > 0
+            has_next = i < Data.players
+
+            bottom_button = "NEXT"
+            if i + 1 == Data.players:
+                bottom_button = "START GAME"
+
+            screen_carousel.add_widget(PerScreen(
+                carousel=screen_carousel,
+                has_prev=has_prev,
+                has_next=has_next,
+                bottom_button_text=bottom_button
+            ))
