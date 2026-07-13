@@ -22,33 +22,32 @@ from kivy.metrics import dp
 
 from logic import *
 
-class RoleSelectionScreen(Screen):
-    def on_enter(self):
-        """ This method triggers automatically when the screen displays. """
-        # clear any old items so they dont duplicate if you leave and come back
-        container = self.ids.roles_container
-        container.clear_widgets()
+class InputAmountPlayers(BoxLayout):
+    def validate_player_count(self, text):
+        # Grab the TextInput widget using its ID
+        input_field = self.ids.player_count_input
         
-        roles_data = [role.to_dict() for role in roles_list]
-        
-        # create and append the widgets dynamically using python
-        for role in roles_data:
-            item = RoleItem(
-                role_name=role["role"],
-                short_desc=role["short"],
-                long_desc=role["long"]
-            )
-            container.add_widget(item)
+        try:
+            value = int(text)
+            if value < 4:
+                input_field.text = "4"
+        except ValueError:
+            # If the field was left entirely blank, default it to 4
+            input_field.text = "4"
 
 
 class RoleItem(BoxLayout):
     # Properties that can be passed from KV or updated dynamically
     count = NumericProperty(0)
+    emoji = StringProperty("")
     role_name = StringProperty("")
     short_desc = StringProperty("")
     long_desc = StringProperty("")
-    is_expanded = BooleanProperty(False)    
+    is_expanded = BooleanProperty(False) 
     
+    def __init__(self, role_class, **kwargs):
+        super().__init__(**kwargs)
+        self.role_class = role_class
 
     def toggle_expand(self, touch):
         # Check if the touch actually happened inside this specific widget
@@ -69,9 +68,38 @@ class RoleItem(BoxLayout):
 
 
     def increment(self):
-        self.count += 1
+        temp = roles_list.copy()
+        roles_list[self.role_class] += 1
+
+        try:
+            
+            self.count += 1
+        except TooManyRoles:
+
+        except UnBalanced:
 
 
     def decrement(self):
         if self.count > 0:
             self.count -= 1
+
+
+class RoleSelectionScreen(Screen):
+    def on_enter(self):
+        """ This method triggers automatically when the screen displays. """
+        # clear any old items so they dont duplicate if you leave and come back
+        container = self.ids.roles_container
+        container.clear_widgets()
+
+        container.add_widget(InputAmountPlayers())
+        
+        # create and append the widgets dynamically using python
+        for role in roles_list:
+            item = RoleItem(
+                role_class=role,
+                emoji=role.data["emoji"],
+                role_name=role.data["role"],
+                short_desc=role.data["short"],
+                long_desc=role.data["long"]
+            )
+            container.add_widget(item)

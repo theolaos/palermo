@@ -73,7 +73,71 @@
                 root.manager.transition.direction = 'left'
                 root.manager.current = 'input_players_amount_screen'
 
+
 # --- CUSTOM ROLE ITEM TEMPLATE ---
+<InputAmountPlayers>:
+    orientation: 'vertical'     # Matches RoleItem structure
+    size_hint_y: None
+    height: dp(80)              # Matching base height
+    padding: 5
+    spacing: 10
+
+    canvas.before:
+        Color:
+            rgba: (0.2, 0.2, 0.2, 1)  # Matches standard item color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    # Main Row Container
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 1          # Let it take up the full parent height
+        padding: 5
+        spacing: 10
+
+        # Left Side: Emoji Icon
+        Label:
+            text: "👥"
+            font_size: '60sp'   # Adjusted from 100sp so it fits neatly inside the dp(80) boundary
+            font_name: "ui/fonts/twemoji.ttf"
+            size_hint_x: 0.2    # Matches the exact horizontal footprint of the RoleItem images
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+
+        # Middle Side: Label Explanation
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5    # Matches the middle text block spacing
+            
+            Label:
+                text: "Amount of players"
+                font_size: '18sp'   # Matches role title font size
+                bold: True
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+
+        # Right Side: Interactive Input Field
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_x: 0.3    # Matches the right column spacing (- number +)
+            padding: [0, 10, 0, 10] # Vertical centering alignment padding
+
+            TextInput:
+                id: player_count_input
+                text: "4"
+                multiline: False
+                input_filter: 'int'
+                font_size: '18sp'
+                halign: 'center'
+                valign: 'middle'
+                size_hint: (1, 1) # Let it smoothly occupy the assigned 30% right area
+                on_text_validate: root.validate_player_count(self.text)
+                on_focus: if not self.focus: root.validate_player_count(self.text)
+
+
 <RoleItem>:
     orientation: 'vertical'
     size_hint_y: None
@@ -96,10 +160,14 @@
         spacing: 10
 
         # Left: Picture Placeholder (Using an Image widget)
-        Image:
-            source: 'images/role_placeholder.png'  # Replace with actual image path or standard fallback
-            size_hint_x: 0.2
-            allow_stretch: True
+        Label:
+            text: root.emoji
+            font_size: '60sp'   # Adjusted from 100sp so it fits neatly inside the dp(80) boundary
+            font_name: "ui/fonts/twemoji.ttf"
+            size_hint_x: 0.2    # Matches the exact horizontal footprint of the RoleItem images
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
 
         # Middle: Text Info
         BoxLayout:

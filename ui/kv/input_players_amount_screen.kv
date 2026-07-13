@@ -67,9 +67,7 @@
                 size_hint: (None, None)
                 size: ('150dp', '50dp')    # Gives it a nice, button-sized box
                 pos_hint: {'center_x': 0.5} # Centers it horizontally
-                # Triggers validation when the user finishes typing
                 on_text_validate: root.validate_player_count(self.text)
-                # Also triggers validation if they tap away from the input field
                 on_focus: if not self.focus: root.validate_player_count(self.text)
             
             Widget:
