@@ -57,13 +57,17 @@ class PerScreen(BoxLayout):
     has_next = BooleanProperty(False) 
     bg_color1 = ListProperty([0.15, 0.15, 0.15, 1]) # Default Dark Gray
     bottom_button_text = StringProperty("NEXT")
+    name = StringProperty("")
 
-    def __init__(self, carousel, **kwargs):
+    def __init__(self, carousel, role, **kwargs):
         super().__init__(**kwargs)
         self.carousel = carousel
+        self.role = role
         
+        self.pressable_label = PressableLabel(role)
+
         self.ids.reavel_role_label.add_widget(
-            PressableLabel(Citizen)
+            self.pressable_label
         )
 
 
@@ -84,11 +88,22 @@ class PerScreen(BoxLayout):
             root.transition.direction = 'down'
             root.current = 'role_selection_screen'
 
+    
+    def save_user_data(self, text_value) -> None:
+        if self.name != text_value:
+            temp = Data.assigned_roles.pop(self.name, None)
+            Data.assigned_roles[text_value] = self.role
+            self.name = text_value
+        
+        print(Data.assigned_roles)
+
 
 class NameRoleAssignScreen(Screen):
     def on_enter(self):
         screen_carousel = self.ids.my_carousel
         screen_carousel.clear_widgets()
+
+        Data.pre_assign_roles = generate_pre_assign_roles_list(Data.amount_roles)
 
         # name_dict = {}
         # for role in roles:
@@ -102,6 +117,7 @@ class NameRoleAssignScreen(Screen):
 
             screen_carousel.add_widget(PerScreen(
                 carousel=screen_carousel,
+                role=Data.pre_assign_roles[i],
                 has_prev=has_prev,
                 has_next=has_next,
                 bottom_button_text=bottom_button

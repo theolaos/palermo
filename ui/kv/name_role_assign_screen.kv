@@ -47,7 +47,7 @@
             text: "<"
             font_size: '22sp'
             size_hint_x: 0.15
-            
+
             on_release: root.top_button()
 
         Label:
@@ -64,14 +64,16 @@
         spacing: '10dp'
 
         TextInput:
-            id: player_count_input
-            text: "Όνομα"
+            id: player_name_input
+            hint_text: "Όνομα"
             multiline: False
             font_size: '30sp'
             halign: 'center'
             valign: 'middle'
             height: '80dp'
             size_hint_y: None
+
+            on_text_validate: root.save_user_data(self.text)
 
             background_normal: ""
             background_active: ""

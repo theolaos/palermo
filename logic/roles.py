@@ -98,7 +98,10 @@ class Data:
         Snitch : 0,
         Crazy : 0
     }
+    generated_roles = False
+    pre_assign_roles = []
     assigned_roles = {}
+
 
 roles_list = [k for k, _  in Data.amount_roles.items()] 
 
@@ -175,23 +178,25 @@ def add_citizens(players, amount_roles) -> None:
     amount_roles[Citizen] += players - s 
 
 
-def assign_roles(
-        players_name: list,
+def generate_pre_assign_roles_list(
         amount_roles: dict[Role, int],
         rng=None,
+    ) -> list[Role]:
+    role_list = []
+    for k, v in amount_roles.items():
+        role_list.extend([k] * v)
+
+    rand = rng or random
+    rand.shuffle(role_list)
+
+    return role_list
+
+
+def assign_roles(
+        players_name: list,
+        pre_assign_roles_list: list,
     ) -> dict[str, Role]:
     """
     Assign the roles at random to the players
     """
-
-    # Assuming that the amount_roles are verified
-    role_list = []
-
-    for k, v in d.items():
-        role_list.extend([k]*v)
-
-    rand = rng or random
-
-    rand.shuffle(role_list)
-
-    return dict(zip(players_name, role_list))
+    return dict(zip(players_name, pre_assign_roles_list))
