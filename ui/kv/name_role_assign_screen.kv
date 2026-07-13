@@ -23,8 +23,11 @@
             id: my_carousel
             direction: 'right'
             loop: False
+            scroll_timeout: 0
+
 
 <PerScreen>:
+
     orientation: 'vertical'
 
     # --- HEADER BAR ---
@@ -46,37 +49,58 @@
             size_hint_x: 0.15
 
         Label:
-            text: "Choose roles"
+            text: "Role Assignment"
             font_size: '20sp'
             bold: True
             size_hint_x: 0.70
             halign: 'center'
 
     BoxLayout:
+        id: reavel_role_label
         orientation: 'vertical'
+        padding: '10dp'
+        spacing: '10dp'
 
         TextInput:
             id: player_count_input
-            text: "hello"
+            text: "Όνομα"
             multiline: False
-            input_filter: 'int'
             font_size: '30sp'
             halign: 'center'
             valign: 'middle'
-            size_hint: (1, 1) # Let it smoothly occupy the assigned 30% right area
-        
+            height: '80dp'
+            size_hint_y: None
+
             background_normal: ""
             background_active: ""
             background_color: (0.1, 0.1, 0.15, 1)
             foreground_color: (1, 1, 1, 1)
 
-        
-        # Label:
 
     Button:
         text: "NEXT"
         font_size: '20sp'
         bold: True
-        size_hint: (0.9, 0.08)  # 90% of screen width, 8% of screen height
+        size_hint: (1, 0.08)
         pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
         background_color: (0.2, 0.8, 0.4, 1) # Green color accent
+
+
+<PressableLabel>:
+    canvas.before:
+        Color:
+            rgba: root.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: root.display_text
+        # size_hint_y: 1
+        font_size: '24sp'
+        bold: True
+
+        # --- THE FIX FOR THE BOTTOM-LEFT TEXT ---
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
