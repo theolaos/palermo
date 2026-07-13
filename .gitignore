@@ -219,3 +219,5 @@ __marimo__/
 
 /.buildozer
 /bin
+
+test.py

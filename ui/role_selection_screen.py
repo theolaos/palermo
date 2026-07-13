@@ -126,5 +126,3 @@ class RoleSelectionScreen(Screen):
         default_role_dict(Data.players, Data.amount_roles)
         for role_item in self.role_item_list:
             role_item.sync()
-            
-
