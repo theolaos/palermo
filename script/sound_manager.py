@@ -23,6 +23,7 @@ class SoundManager:
         "intro_madness": SoundLoader.load(directory + "night/intro_madness.wav"),
         "intro_spy_mafia": SoundLoader.load(directory + "night/intro_spy_mafia.wav"),
 
+        "night_intro": SoundLoader.load(directory + "night/night_intro.wav"),
         "night_start_mafia": SoundLoader.load(directory + "night/night_start_mafia.wav"),
         "night_mafia_target": SoundLoader.load(directory + "night/night_mafia_target.wav"),
         "night_people_close": SoundLoader.load(directory + "night/night_mafia_close.wav"),
@@ -75,3 +76,7 @@ class SoundManager:
         sound.play()
         sound.seek(SoundManager.last_narration[1])
         SoundManager.last_narration = [name_narration, t]
+
+    @staticmethod
+    def get_length(name_narration: str) -> float:
+        return SoundManager.narr[name_narration].length

@@ -70,7 +70,7 @@ class NightScreen(Screen):
         self.intro_stages = [
             "night_intro",
             "night_start_mafia",
-            Wait(7.0),
+            Wait(6),
             "night_people_close",
             "intro_spy_mafia",
             Wait(6.0),
@@ -81,12 +81,18 @@ class NightScreen(Screen):
             "intro_madness"
         ]
 
+        # for k, v in Data.amount_roles.items():
+        #     if v > 0:
+        #         self.intro_stages = 
+
         self.index = 0
         self.clock_event = None
 
 
     def on_enter(self):
         Data.day += 1
+
+
         container = self.ids.players_container_night
         container.clear_widgets()
         
@@ -101,11 +107,10 @@ class NightScreen(Screen):
             self.role_item_list.append(item)
             container.add_widget(item)
 
-        # if Data.current_state in [GamePhase.FIRST_NIGHT, GamePhase.NIGHT]:
-        #     SoundManager.play_narration("night_start_mafia")
-            
-        #     if Data.current_state == GamePhase.FIRST_NIGHT:
-        #         ...
+        self.stages = self.intro_stages if Data.current_state == GamePhase.FIRST_NIGHT else self.night_stages
+
+        self.show_overlay()
+        self.play_stage()
 
 
     def show_overlay(self):
@@ -130,7 +135,7 @@ class NightScreen(Screen):
 
 
     def play_stage(self):
-        if self.index > len(self.stage):
+        if self.index > len(self.stages):
             self.overlay.dismiss()
             self.manager.transition.direction = 'left'
             self.manager.current = 'day_voting_screen'
@@ -140,7 +145,7 @@ class NightScreen(Screen):
 
         if type(stage) == Wait:
             callback = partial(self.timer_overlay, stage.sec)
-            self.clock_event = Clock.schedule_once(self.timer_overlay, stage.sec)    
+            self.clock_event = Clock.schedule_once(callback, stage.sec)    
             return
         elif type(stage) == Choice:
             self.overlay.dismiss()
@@ -148,10 +153,10 @@ class NightScreen(Screen):
             return
         
         SoundManager.play_narration(stage)
-        self.clock_event = Clock.schedule_once(self.next_stage, self.time_left)
+        self.clock_event = Clock.schedule_once(self.next_stage, SoundManager.get_length(stage))
         
 
-    def next_stage(self):
+    def next_stage(self, dt=None):
         self.index += 1
         self.play_stage()
 
