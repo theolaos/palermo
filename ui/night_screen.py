@@ -51,7 +51,7 @@ class NightScreen(Screen):
         self.overlay = None
 
     def on_enter(self):
-        print("yooooo biatch")
+        # print("yooooo biatch")
         Data.day += 1
         container = self.ids.players_container_night
         container.clear_widgets()
