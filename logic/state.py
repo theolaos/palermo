@@ -37,6 +37,9 @@ class Wait:
 class Choice:
     whos: Role
 
+@dataclass
+class OverlayText:
+    msg: str
 
 def create_player_dataclass_list(d: dict[str, Role]) -> list[Player]:
     return [Player(k, v) for k, v in d.items()]

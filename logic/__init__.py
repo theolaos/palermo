@@ -25,7 +25,7 @@ from .roles import (
 )
 
 from .exceptions import TooManyRoles, UnBalanced, NotEnoughRoles
-from .state import GamePhase, create_player_dataclass_list, Wait, Choice
+from .state import GamePhase, create_player_dataclass_list, Wait, Choice, OverlayText
 
 __all__ = [
     "Citizen", "Mayor", "Sheriff", "Killer", "Crazy",
@@ -37,5 +37,5 @@ __all__ = [
     "add_citizens", "enough_roles",
     "Data",
     "TooManyRoles", "UnBalanced", "NotEnoughRoles",
-    "GamePhase", "create_player_dataclass_list", "Wait", "Choice"
+    "GamePhase", "create_player_dataclass_list", "Wait", "Choice", "OverlayText"
 ]

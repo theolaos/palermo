@@ -68,16 +68,21 @@ class NightScreen(Screen):
         ]
 
         self.intro_stages = [
+            OverlayText("Νεα νύχτα"),
             "night_intro",
+            OverlayText("Δολοφόνοι"),
             "night_start_mafia",
-            Wait(6),
-            "night_people_close",
-            "intro_spy_mafia",
             Wait(6.0),
+            "night_people_close",
+            OverlayText("Προδότης"),
+            "intro_spy_mafia",
+            Wait(5.0),
             "night_person_close",
+            OverlayText("Σερίφης"),
             "night_cop_open",
             Choice(Sheriff),
             "night_person_close",
+            OverlayText("Τρέλα"),
             "intro_madness"
         ]
 
@@ -87,6 +92,7 @@ class NightScreen(Screen):
 
         self.index = 0
         self.clock_event = None
+        self.timer_event = None
 
 
     def on_enter(self):
@@ -121,21 +127,36 @@ class NightScreen(Screen):
         # Open the overlay to lock controls and show the text
         self.overlay.open()
 
-    
+
+    def change_text_overlay(self, new_text: str) -> None:
+        if not self.overlay: # dynamic overlay creation
+            from kivy.factory import Factory
+            self.overlay = Factory.LoadingOverlay()
+        
+        # Open the overlay to lock controls and show the text
+        self.overlay.overlay_text = new_text
+
+
     def start_choice(self):
         ...
 
 
-    def timer_overlay(self):
-        ...
+    def timer_overlay(self, sec, dt=None):
+        if not sec - 1 < 0:
+            self.change_text_overlay(f"Χρόνος κοιτάγματος: {sec}")
+            callback = partial(self.timer_overlay, sec - 1)
+            self.timer_event = Clock.schedule_once(callback, 1) 
+        else:
+            self.change_text_overlay(f"Χρόνος κοιτάγματος: {sec}")
+            self.next_stage()
 
-    
+
     def choice(self):
         ...
 
 
     def play_stage(self):
-        if self.index > len(self.stages):
+        if self.index >= len(self.stages):
             self.overlay.dismiss()
             self.manager.transition.direction = 'left'
             self.manager.current = 'day_voting_screen'
@@ -145,13 +166,16 @@ class NightScreen(Screen):
 
         if type(stage) == Wait:
             callback = partial(self.timer_overlay, stage.sec)
-            self.clock_event = Clock.schedule_once(callback, stage.sec)    
+            self.clock_event = Clock.schedule_once(callback, 0)    
             return
         elif type(stage) == Choice:
             self.overlay.dismiss()
             self.choice(stage.whos)
             return
-        
+        elif type(stage) == OverlayText:
+            self.change_text_overlay(stage.msg)
+            return self.next_stage()
+
         SoundManager.play_narration(stage)
         self.clock_event = Clock.schedule_once(self.next_stage, SoundManager.get_length(stage))
         
@@ -167,3 +191,6 @@ class NightScreen(Screen):
 
     def resume_narration(self):
         SoundManager.continue_narration()
+
+# class LoadingOverlay(ModalView):
+#     overlay_text = StringProperty("Loading...") # Now root.text exists!
