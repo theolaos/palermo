@@ -28,6 +28,15 @@ class GamePhase(Enum):
     VOTING = auto()
     GAME_OVER = auto()
 
+@dataclass
+class Wait:
+    sec: float
+
+
+@dataclass
+class Choice:
+    whos: Role
+
 
 def create_player_dataclass_list(d: dict[str, Role]) -> list[Player]:
     return [Player(k, v) for k, v in d.items()]

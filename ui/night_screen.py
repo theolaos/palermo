@@ -14,11 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from functools import partial
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, ListProperty, BooleanProperty
+from kivy.clock import Clock
+
 
 from logic import *
+from script import SoundManager
 
 
 class PlayerItem(BoxLayout):
@@ -50,8 +54,38 @@ class NightScreen(Screen):
         self.introductory_night = False # turns to True if it happened.
         self.overlay = None
 
+        self.stages = None
+
+        self.night_stages = [
+            "night_intro",
+            "night_start_mafia",
+            "night_mafia_target",
+            Choice(Killer),
+            "night_people_close",
+            "night_cop_open",
+            Choice(Sheriff),
+            "night_person_close",
+        ]
+
+        self.intro_stages = [
+            "night_intro",
+            "night_start_mafia",
+            Wait(7.0),
+            "night_people_close",
+            "intro_spy_mafia",
+            Wait(6.0),
+            "night_person_close",
+            "night_cop_open",
+            Choice(Sheriff),
+            "night_person_close",
+            "intro_madness"
+        ]
+
+        self.index = 0
+        self.clock_event = None
+
+
     def on_enter(self):
-        # print("yooooo biatch")
         Data.day += 1
         container = self.ids.players_container_night
         container.clear_widgets()
@@ -67,12 +101,11 @@ class NightScreen(Screen):
             self.role_item_list.append(item)
             container.add_widget(item)
 
-        if Data.current_state == GamePhase.FIRST_NIGHT:
-            ...
+        # if Data.current_state in [GamePhase.FIRST_NIGHT, GamePhase.NIGHT]:
+        #     SoundManager.play_narration("night_start_mafia")
             
-        else:
-            ...
-            
+        #     if Data.current_state == GamePhase.FIRST_NIGHT:
+        #         ...
 
 
     def show_overlay(self):
@@ -83,7 +116,49 @@ class NightScreen(Screen):
         # Open the overlay to lock controls and show the text
         self.overlay.open()
 
+    
+    def start_choice(self):
+        ...
 
-    def press_next_day(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'day_voting_screen'       
+
+    def timer_overlay(self):
+        ...
+
+    
+    def choice(self):
+        ...
+
+
+    def play_stage(self):
+        if self.index > len(self.stage):
+            self.overlay.dismiss()
+            self.manager.transition.direction = 'left'
+            self.manager.current = 'day_voting_screen'
+            return
+
+        stage = self.stages[self.index]
+
+        if type(stage) == Wait:
+            callback = partial(self.timer_overlay, stage.sec)
+            self.clock_event = Clock.schedule_once(self.timer_overlay, stage.sec)    
+            return
+        elif type(stage) == Choice:
+            self.overlay.dismiss()
+            self.choice(stage.whos)
+            return
+        
+        SoundManager.play_narration(stage)
+        self.clock_event = Clock.schedule_once(self.next_stage, self.time_left)
+        
+
+    def next_stage(self):
+        self.index += 1
+        self.play_stage()
+
+
+    def pause_narration(self):
+        SoundManager.stop_narration()
+
+
+    def resume_narration(self):
+        SoundManager.continue_narration()

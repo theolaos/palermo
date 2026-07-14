@@ -25,9 +25,9 @@ class SoundManager:
 
         "night_start_mafia": SoundLoader.load(directory + "night/night_start_mafia.wav"),
         "night_mafia_target": SoundLoader.load(directory + "night/night_mafia_target.wav"),
-        "night_mafia_close": SoundLoader.load(directory + "night/night_mafia_close.wav"),
+        "night_people_close": SoundLoader.load(directory + "night/night_mafia_close.wav"),
         "night_cop_open": SoundLoader.load(directory + "night/night_cop_open.wav"),
-        "night_cop_close": SoundLoader.load(directory + "night/night_cop_close.wav"),
+        "night_person_close": SoundLoader.load(directory + "night/night_cop_close.wav"),
 
         "day_start": SoundLoader.load(directory + "day/day_start.wav"),
         "day_voting_start": SoundLoader.load(directory + "day/day_voting_start.wav"),
@@ -64,12 +64,14 @@ class SoundManager:
     @staticmethod
     def stop_narration(name_narration: str) -> None:
         sound = SoundManager.narr[name_narration]
-        t = sound.get_pos()
         sound.stop()
+        t = sound.get_pos()
         SoundManager.last_narration = [name_narration, t]
 
 
     @staticmethod
     def continue_narration(name_narration: str) -> None:
-        SoundManager.narr[name_narration].seek(SoundManager.last_narration[1])
+        sound = SoundManager.narr[name_narration]
+        sound.play()
+        sound.seek(SoundManager.last_narration[1])
         SoundManager.last_narration = [name_narration, t]
