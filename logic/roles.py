@@ -106,6 +106,8 @@ class Data:
     assigned_players: list[Player] = []
     current_state = None
 
+    night_action = False
+
 
 class Settings:
     ...

@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from .roles import (
+    Role,
     Citizen, 
     Mayor, 
     Sheriff, 
@@ -25,7 +26,7 @@ from .roles import (
 )
 
 from .exceptions import TooManyRoles, UnBalanced, NotEnoughRoles
-from .state import GamePhase, create_player_dataclass_list, Wait, Choice, OverlayText
+from .state import GamePhase, create_player_dataclass_list, Wait, Choice, OverlayText, StartOverlay
 
 __all__ = [
     "Citizen", "Mayor", "Sheriff", "Killer", "Crazy",
@@ -37,5 +38,5 @@ __all__ = [
     "add_citizens", "enough_roles",
     "Data",
     "TooManyRoles", "UnBalanced", "NotEnoughRoles",
-    "GamePhase", "create_player_dataclass_list", "Wait", "Choice", "OverlayText"
+    "GamePhase", "create_player_dataclass_list", "Wait", "Choice", "OverlayText", "StartOverlay"
 ]

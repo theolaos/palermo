@@ -40,6 +40,7 @@ class PlayerItem(BoxLayout):
     
 
     def vote(self):
+        
         self.player.vote += 1
 
 
@@ -103,14 +104,14 @@ class NightScreen(Screen):
         container.clear_widgets()
         
         # create and append the widgets dynamically
-        self.role_item_list = []
+        self.player_item_list = []
         for player in Data.assigned_players:
             item = PlayerItem(
                 player=player,
                 player_name=player.name,
                 emoji=player.role.data["emoji"]
             )
-            self.role_item_list.append(item)
+            self.player_item_list.append(item)
             container.add_widget(item)
 
         self.stages = self.intro_stages if Data.current_state == GamePhase.FIRST_NIGHT else self.night_stages
@@ -137,10 +138,6 @@ class NightScreen(Screen):
         self.overlay.overlay_text = new_text
 
 
-    def start_choice(self):
-        ...
-
-
     def timer_overlay(self, sec, dt=None):
         if not sec - 1 < 0:
             self.change_text_overlay(f"Χρόνος κοιτάγματος: {sec}")
@@ -151,8 +148,9 @@ class NightScreen(Screen):
             self.next_stage()
 
 
-    def choice(self):
-        ...
+    def choice(self, who: Role):
+        for role in self.self.player_item_list:
+            action_button_text = "Reveal Role" if type(who) == Sheriff else "Kill"
 
 
     def play_stage(self):
@@ -174,7 +172,8 @@ class NightScreen(Screen):
             return
         elif type(stage) == OverlayText:
             self.change_text_overlay(stage.msg)
-            return self.next_stage()
+            self.next_stage()
+            return
 
         SoundManager.play_narration(stage)
         self.clock_event = Clock.schedule_once(self.next_stage, SoundManager.get_length(stage))
