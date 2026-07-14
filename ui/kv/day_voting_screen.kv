@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-<RoleSelectionScreen>:
+
+<DayVotingScreen>:
     BoxLayout:
         orientation: 'vertical'
         
@@ -30,29 +31,29 @@
                     pos: self.pos
                     size: self.size
 
-            Button:
-                text: "<"
-                font_size: '22sp'
-                size_hint_x: 0.15
-                on_release: 
-                    root.manager.transition.direction = 'right'
-                    root.manager.current = 'main_menu_screen'
+            # Button:
+            #     text: "<"
+            #     font_size: '22sp'
+            #     size_hint_x: 0.15
+            #     on_release: 
+            #         root.manager.transition.direction = 'right'
+            #         root.manager.current = 'main_menu_screen'
 
             Label:
-                text: "Choose roles"
+                text: "Night Cycle"
                 font_size: '20sp'
                 bold: True
                 size_hint_x: 0.70
                 halign: 'center'
             
-            Button:
-                text: "🔄"
-                font_name: "ui/fonts/twemoji.ttf"
-                font_size: '35sp'
-                size_hint_x: 0.15
-                background_color: (0.4, 0.4, 0.6, 1)
-                on_release: 
-                    root.default_roles()
+            # Button:
+            #     text: "🔄"
+            #     font_name: "ui/fonts/twemoji.ttf"
+            #     font_size: '35sp'
+            #     size_hint_x: 0.15
+            #     background_color: (0.4, 0.4, 0.6, 1)
+            #     on_release: 
+            #         root.default_roles()
 
         # --- SCROLLABLE LIST AREA ---
         ScrollView:
@@ -60,7 +61,7 @@
             do_scroll_y: True
 
             BoxLayout:
-                id: roles_container
+                id: players_container
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
@@ -69,85 +70,16 @@
                 spacing: 10
         
         Button:
-            text: "NEXT"
+            text: root.bottom_button
             font_size: '20sp'
             bold: True
             size_hint: (1, 0.08)
             pos_hint: {'center_x': 0.5, 'y': 0.03}  # Centered horizontally, 3% up from the bottom boundary
-            background_color: (0.2, 0.8, 0.4, 1) # Green color accent
-            on_release: root.press_next_button()
+            background_color: root.bottom_bg_color # Green color accent
+            on_release: root.press_next_day()
 
 
-# --- CUSTOM ROLE ITEM TEMPLATE ---
-<InputAmountPlayers>:
-    orientation: 'vertical'     # Matches RoleItem structure
-    size_hint_y: None
-    height: dp(80)              # Matching base height
-    padding: 5
-    spacing: 10
-
-    canvas.before:
-        Color:
-            rgba: (0.2, 0.2, 0.2, 1)  # Matches standard item color
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
-    # Main Row Container
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint_y: 1          # Let it take up the full parent height
-        padding: 5
-        spacing: 10
-
-        # Left Side: Emoji Icon
-        Label:
-            text: "👥"
-            font_size: '60sp'   # Adjusted from 100sp so it fits neatly inside the dp(80) boundary
-            font_name: "ui/fonts/twemoji.ttf"
-            size_hint_x: 0.2    # Matches the exact horizontal footprint of the RoleItem images
-            halign: 'center'
-            valign: 'middle'
-            text_size: self.size
-
-        # Middle Side: Label Explanation
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_x: 0.5    # Matches the middle text block spacing
-            
-            Label:
-                text: "Amount of players"
-                font_size: '18sp'   # Matches role title font size
-                bold: True
-                text_size: self.size
-                halign: 'left'
-                valign: 'middle'
-
-        # Right Side: Interactive Input Field
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint_x: 0.3    # Matches the right column spacing (- number +)
-            padding: [0, 10, 0, 10] # Vertical centering alignment padding
-
-            TextInput:
-                id: player_count_input
-                text: root.get_text()
-                multiline: False
-                input_filter: 'int'
-                font_size: '30sp'
-                halign: 'center'
-                valign: 'middle'
-                size_hint: (1, 1) # Let it smoothly occupy the assigned 30% right area
-                on_text_validate: root.validate_player_count(self.text)
-                on_focus: if not self.focus: root.validate_player_count(self.text)
-
-                background_normal: ""
-                background_active: ""
-                background_color: (0.1, 0.1, 0.15, 1)
-                foreground_color: (1, 1, 1, 1)
-
-
-<RoleItem>:
+<PlayerItem>:
     orientation: 'vertical'
     size_hint_y: None
     height: dp(80)  # Default collapsed height
@@ -160,7 +92,7 @@
             pos: self.pos
             size: self.size
 
-    # Main Row (Emoji, Text, Counter)
+    # Main Row (Image, Text, Counter)
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None
@@ -233,4 +165,4 @@
         height: self.texture_size[1] if root.is_expanded else 0
         padding: [10, 10]
         halign: 'left'
-        valign: 'top'
+        valign: 'top'    

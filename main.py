@@ -23,7 +23,7 @@ width = 300
 Config.set('graphics', 'width', str(int(width*scalar)))
 Config.set('graphics', 'height', str(int(width*scalar*ratio)))
 Config.set('graphics', 'resizable', False)
-
+Config.set('kivy', 'exit_on_escape', '0') # self explanatory on what it does
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -32,6 +32,7 @@ from kivy.uix.screenmanager import ScreenManager
 from ui.main_menu_screen import MainMenuScreen
 from ui.role_selection_screen import RoleSelectionScreen
 from ui.name_role_assign_screen import NameRoleAssignScreen
+from ui.night_screen import NightScreen
 
 class GameScreenManager(ScreenManager): ...
 

@@ -13,20 +13,3 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
-#:include ui/kv/main_menu_screen.kv
-#:include ui/kv/role_selection_screen.kv
-#:include ui/kv/name_role_assign_screen.kv
-#:include ui/kv/night_screen.kv
-# #:include ui/kv/
-
-<GameScreenManager>:
-    MainMenuScreen:
-        name: 'main_menu_screen'
-    RoleSelectionScreen:
-        name: 'role_selection_screen'
-    NameRoleAssignScreen:
-        name: 'name_role_assign_screen'
-    NightScreen:
-        name: 'night_screen'

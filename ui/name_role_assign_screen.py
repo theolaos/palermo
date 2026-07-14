@@ -75,15 +75,21 @@ class PerScreen(BoxLayout):
         if self.has_next:
             self.carousel.load_next()
         else:
+            Data.assigned_players = create_player_dataclass_list(Data.assigned_roles)
+            print("Yooo:", Data.assigned_players)
+            print("Yoo2:", Data.assigned_roles)
+            Data.current_state = GamePhase.FIRST_NIGHT
+
             root = App.get_running_app().root 
-            root.transition.direction = 'up'
-            root.current = 'name_role_assign_screen'
+            root.transition.direction = 'down'
+            root.current = 'night_screen'
 
     
     def top_button(self):
         if self.has_prev:
             self.carousel.load_previous()
         else:
+  
             root = App.get_running_app().root 
             root.transition.direction = 'down'
             root.current = 'role_selection_screen'
@@ -95,7 +101,7 @@ class PerScreen(BoxLayout):
             Data.assigned_roles[text_value] = self.role
             self.name = text_value
         
-        print(Data.assigned_roles)
+        # print(Data.assigned_roles)
 
 
 class NameRoleAssignScreen(Screen):
@@ -109,7 +115,7 @@ class NameRoleAssignScreen(Screen):
         # for role in roles:
         for i in range(Data.players):
             has_prev = i > 0
-            has_next = i < Data.players
+            has_next = i + 1 < Data.players
 
             bottom_button = "NEXT"
             if i + 1 == Data.players:

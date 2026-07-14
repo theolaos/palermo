@@ -32,7 +32,7 @@ class Mafia(Role): ...
 
 class Citizen(Town):
     data = {
-        "emoji" : "👤",
+        "emoji" : "👨‍🦱",
         "role" : "Πολίτης",
         "short" : "Ένας απλός κάτοικος της πόλης.",
         "long" : "Δεν έχεις ειδικές δυνάμεις τη νύχτα, αλλά η ψήφος σου την ημέρα είναι καθοριστική για να βρεθούν οι ένοχοι."
@@ -85,11 +85,13 @@ class Crazy(Mafia):
 class Player:
     name: str
     role: Role
+    vote: int = 0
     alive: bool = True
     phone_type: str = "Generic Phone"
 
 class Data:
     players = 4
+    day = 0
     amount_roles = {
         Citizen : 0,
         Mayor : 0,
@@ -101,6 +103,12 @@ class Data:
     generated_roles = False
     pre_assign_roles = []
     assigned_roles = {}
+    assigned_players: list[Player] = []
+    current_state = None
+
+
+class Settings:
+    ...
 
 
 roles_list = [k for k, _  in Data.amount_roles.items()] 

@@ -99,6 +99,7 @@ class RoleItem(BoxLayout):
 
 class RoleSelectionScreen(Screen):
     def on_enter(self):
+        print("yooooo biatch, but from the RoleSelectionScreen")
         """ This method triggers automatically when the screen displays. """
         # clear any old items so they dont duplicate if you leave and come back
         container = self.ids.roles_container
