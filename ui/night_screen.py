@@ -15,11 +15,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from functools import partial
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
-from kivy.properties import StringProperty, ListProperty, BooleanProperty
-from kivy.clock import Clock
+from kivy.uix.modalview import ModalView
 
+from kivy.properties import StringProperty, ListProperty, BooleanProperty, ObjectProperty, ColorProperty
+from kivy.clock import Clock
 
 from logic import *
 from script import SoundManager
@@ -31,6 +33,7 @@ class PlayerItem(BoxLayout):
     emoji = StringProperty("👤")
     show_role_emoji = BooleanProperty(False)
     default_emoji = StringProperty("👤")
+    bg_color = ColorProperty([1,1,1,1])
 
 
     def __init__(self, player, **kwargs):
@@ -40,8 +43,16 @@ class PlayerItem(BoxLayout):
     
 
     def vote(self):
-        
-        self.player.vote += 1
+        if Data.current_state in [GamePhase.FIRST_NIGHT, GamePhase.NIGHT] and Data.night_action:
+            if self.player.role == Sheriff:
+                return
+
+            self.action_button_text = "Revealed" if Data.night_action_role == Sheriff else "Killed"
+            self.show_role_emoji = Data.night_action_role == Sheriff 
+
+            Data.night_action = False
+        else:
+            self.player.vote += 1
 
 
 class NightScreen(Screen):
@@ -149,13 +160,20 @@ class NightScreen(Screen):
 
 
     def choice(self, who: Role):
-        for role in self.self.player_item_list:
-            action_button_text = "Reveal Role" if type(who) == Sheriff else "Kill"
+        for player_item in self.player_item_list:
+            player_item.action_button_text = "Reveal" if who == Sheriff else "Kill"
+            Data.night_action = True
+            Data.night_action_role = who
+            if player_item.player.role == Sheriff:
+                player_item.bg_color = [0.7,0.7,0.7,0.7]
+                player_item.show_role_emoji = True
+                player_item.action_button_text = "Known"
 
 
     def play_stage(self):
         if self.index >= len(self.stages):
             self.overlay.dismiss()
+            Data.current_state = GamePhase.VOTING
             self.manager.transition.direction = 'left'
             self.manager.current = 'day_voting_screen'
             return
@@ -191,5 +209,7 @@ class NightScreen(Screen):
     def resume_narration(self):
         SoundManager.continue_narration()
 
-# class LoadingOverlay(ModalView):
-#     overlay_text = StringProperty("Loading...") # Now root.text exists!
+
+class LoadingOverlay(ModalView):
+    overlay_text = StringProperty("Loading...") # Now root.text exists!
+    screen_onj = ObjectProperty(None)

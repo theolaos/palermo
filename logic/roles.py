@@ -107,6 +107,7 @@ class Data:
     current_state = None
 
     night_action = False
+    night_action_role: Role = None
 
 
 class Settings:

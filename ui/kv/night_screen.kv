@@ -110,13 +110,14 @@
         font_size: '16sp'
         size_hint_x: 0.3
         on_release: root.vote()
+        background_color: root.bg_color
 
 
 <LoadingOverlay@ModalView>:
     # This color is [R, G, B, A]. Grey with 0.5 alpha:
     background_color: [0.2, 0.2, 0.2, 0.5]
     background: '' # Removes the default Kivy background image texture
-    overlay_text: "None"
+
     
     # Prevents the user from closing the overlay by clicking outside of it
     auto_dismiss: False 
@@ -131,9 +132,11 @@
             text: root.overlay_text
             font_size: '20sp'
             bold: True
-            
-        Button:
-            text: "Dismiss"
-            size_hint_y: None
-            height: '40dp'
-            on_press: root.dismiss()
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                text: "Dismiss"
+                size_hint_y: None
+                height: '40dp'
+                # on_press: root.dismiss()
