@@ -19,7 +19,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, ListProperty
 
 
-class NightScreen(Screen):
+class DayVotingScreen(Screen):
     bottom_button = StringProperty("PAUSE")
     bottom_bg_color = ListProperty((0.2, 0.8, 0.4, 1))
 

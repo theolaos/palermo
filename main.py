@@ -16,6 +16,11 @@
 
 from kivy.config import Config
 
+from kivy.core.text import LabelBase
+
+# Run this ONCE at the very top of your main.py file (outside of any classes)
+LabelBase.register(name="Twemoji", fn_regular="ui/fonts/twemoji.ttf")
+
 # Set the window width and height to match a standard phone aspect ratio (e.g., 360x640)
 scalar = 1.5
 ratio = 2300/1080
@@ -33,6 +38,7 @@ from ui.main_menu_screen import MainMenuScreen
 from ui.role_selection_screen import RoleSelectionScreen
 from ui.name_role_assign_screen import NameRoleAssignScreen
 from ui.night_screen import NightScreen
+from ui.day_voting_screen import DayVotingScreen
 
 class GameScreenManager(ScreenManager): ...
 

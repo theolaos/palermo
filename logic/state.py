@@ -37,9 +37,11 @@ class Wait:
 class Choice:
     whos: Role
 
+
 @dataclass
 class OverlayText:
     msg: str
+
 
 @dataclass
 class StartOverlay:...

@@ -88,7 +88,7 @@
     ```
 - Make this change to the `include_exts`:
     ```spec
-    source.include_exts = py,png,jpg,kv,atlas,ttf
+    source.include_exts = py,png,jpg,kv,atlas,ttf,wav
     ```
 - Running buildozer:
     ```bash

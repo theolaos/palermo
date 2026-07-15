@@ -36,9 +36,10 @@ class PlayerItem(BoxLayout):
     bg_color = ColorProperty([1,1,1,1])
 
 
-    def __init__(self, player, **kwargs):
+    def __init__(self, player, screen, **kwargs):
         super().__init__(**kwargs)
         self.player = player
+        self.screen = screen
         # self.default_emoji = "👤"
     
 
@@ -51,9 +52,13 @@ class PlayerItem(BoxLayout):
             self.show_role_emoji = Data.night_action_role == Sheriff 
 
             Data.night_action = False
+
+            self.screen.revealed(self.player)
         else:
             self.player.vote += 1
 
+# import os
+# print("Font path exists:", os.path.exists("ui/fonts/twemoji.ttf"))
 
 class NightScreen(Screen):
     bottom_button = StringProperty("PAUSE")
@@ -65,6 +70,7 @@ class NightScreen(Screen):
         super().__init__(**kwargs)
         self.introductory_night = False # turns to True if it happened.
         self.overlay = None
+        self.overlay_open = False
 
         self.stages = None
 
@@ -93,6 +99,7 @@ class NightScreen(Screen):
             OverlayText("Σερίφης"),
             "night_cop_open",
             Choice(Sheriff),
+            # Wait(5.0),
             "night_person_close",
             OverlayText("Τρέλα"),
             "intro_madness"
@@ -119,6 +126,7 @@ class NightScreen(Screen):
         for player in Data.assigned_players:
             item = PlayerItem(
                 player=player,
+                screen=self,
                 player_name=player.name,
                 emoji=player.role.data["emoji"]
             )
@@ -131,13 +139,23 @@ class NightScreen(Screen):
         self.play_stage()
 
 
+    def revealed(self, player):
+        emoji = player.role.data['emoji']
+        print(f"Emoji: {emoji} | Type: {type(emoji)} | Length: {len(emoji)}")
+        self.change_text_overlay(f"Ο/Η {player.name} είναι [font=Twemoji]{emoji}[/font] {player.role.data["role"]}")
+        self.show_overlay()
+        self.timer_event = Clock.schedule_once(self.next_stage, 4)
+
+
     def show_overlay(self):
         if not self.overlay: # dynamic overlay creation
             from kivy.factory import Factory
             self.overlay = Factory.LoadingOverlay()
         
         # Open the overlay to lock controls and show the text
-        self.overlay.open()
+        if not self.overlay_open:
+            self.overlay_open = True
+            self.overlay.open()
 
 
     def change_text_overlay(self, new_text: str) -> None:
@@ -147,6 +165,16 @@ class NightScreen(Screen):
         
         # Open the overlay to lock controls and show the text
         self.overlay.overlay_text = new_text
+
+    
+    def stop_overlay(self):
+        if not self.overlay: # dynamic overlay creation
+            from kivy.factory import Factory
+            self.overlay = Factory.LoadingOverlay()
+
+        if self.overlay_open:
+            self.overlay_open = False
+            self.overlay.dismiss()      
 
 
     def timer_overlay(self, sec, dt=None):
@@ -165,17 +193,16 @@ class NightScreen(Screen):
             Data.night_action = True
             Data.night_action_role = who
             if player_item.player.role == Sheriff:
-                player_item.bg_color = [0.7,0.7,0.7,0.7]
+                player_item.bg_color = [0.7, 0.7, 0.7, 0.7]
                 player_item.show_role_emoji = True
                 player_item.action_button_text = "Known"
 
 
     def play_stage(self):
         if self.index >= len(self.stages):
-            self.overlay.dismiss()
+            self.stop_overlay()
             Data.current_state = GamePhase.VOTING
-            self.manager.transition.direction = 'left'
-            self.manager.current = 'day_voting_screen'
+            self.timer_event = Clock.schedule_once(self.next_screen, 1.5)
             return
 
         stage = self.stages[self.index]
@@ -185,7 +212,7 @@ class NightScreen(Screen):
             self.clock_event = Clock.schedule_once(callback, 0)    
             return
         elif type(stage) == Choice:
-            self.overlay.dismiss()
+            self.stop_overlay()
             self.choice(stage.whos)
             return
         elif type(stage) == OverlayText:
@@ -195,7 +222,12 @@ class NightScreen(Screen):
 
         SoundManager.play_narration(stage)
         self.clock_event = Clock.schedule_once(self.next_stage, SoundManager.get_length(stage))
-        
+
+
+    def next_screen(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'day_voting_screen'
+
 
     def next_stage(self, dt=None):
         self.index += 1
