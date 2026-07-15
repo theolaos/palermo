@@ -25,17 +25,23 @@ class GamePhase(Enum):
     FIRST_NIGHT = auto()
     NIGHT = auto()
     # DAY_DISCUSSION = auto()
+    FIRST_VOTING = auto()
     VOTING = auto()
     GAME_OVER = auto()
 
 @dataclass
 class Wait:
     sec: float
+    msg: str = None
 
 
 @dataclass
 class Choice:
     whos: Role
+
+
+@dataclass
+class Voting: ...
 
 
 @dataclass

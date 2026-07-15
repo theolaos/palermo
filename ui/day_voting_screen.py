@@ -30,40 +30,28 @@ from .game_loop import GameLoop
 
 class DayVotingScreen(GameLoop):
     def choose_stage(self):
-        self.night_stages = [
-            "night_intro",
-            "night_start_mafia",
-            "night_mafia_target",
-            Choice(Killer),
-            "night_people_close",
-            "night_cop_open",
-            Choice(Sheriff),
-            "night_person_close",
+
+        
+        self.day_stages = [
+            Wait(5, "Μια μέρα ξημερώνει στο Παλέρμο. Μπορείτε να ανοίξετε τα μάτια σας."),
+            Wait(3, "Η ψηφοφορία έχει ξεκινήσει."),
+            Voting(),
+            Wait(3, "Η ψηφοφορία έχει τελειώσει."),
         ]
 
-        self.intro_stages = [
-            OverlayText("Νεα νύχτα"),
-            "night_intro",
-            OverlayText("Δολοφόνοι"),
-            "night_start_mafia",
-            Wait(6.0),
-            "night_people_close",
-            OverlayText("Προδότης"),
-            "intro_spy_mafia",
-            Wait(5.0),
-            "night_person_close",
-            OverlayText("Σερίφης"),
-            "night_cop_open",
-            Choice(Sheriff),
-            # Wait(5.0),
-            "night_person_close",
-            OverlayText("Τρέλα"),
-            "intro_madness"
-        ]
+        self.intro_stages = self.night_stages.append(
+            Wait(6, "Το άτομο το οποίο ψηφίσατε εκτός παιχνιδιού να πάρει το κινητό στην θέση του.")
+        )
 
-        # for k, v in Data.amount_roles.items():
-        #     if v > 0:
-        #         self.intro_stages = 
 
-        return self.night_stages
+        return self.intro_stages if Data.current_state == GamePhase.FIRST_VOTING else self.day_stages
 
+    def next_screen(self, dt=None):
+        if Data.current_state in [GamePhase.FIRST_VOTING, GamePhase.VOTING]:
+            Data.current_state = GamePhase.NIGHT
+        else:
+            print("Wrong game phase")
+            Data.current_state = GamePhase.NIGHT
+
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'night_screen'

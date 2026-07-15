@@ -20,6 +20,7 @@ from .roles import (
     Mayor, 
     Sheriff, 
     Killer,
+    Snitch,
     Crazy,
     default_role_dict, verify_role_dict, assign_roles, 
     roles_list, Data, add_citizens, enough_roles, generate_pre_assign_roles_list
@@ -29,7 +30,7 @@ from .exceptions import TooManyRoles, UnBalanced, NotEnoughRoles
 from .state import GamePhase, create_player_dataclass_list, Wait, Choice, OverlayText, StartOverlay, ClearList
 
 __all__ = [
-    "Citizen", "Mayor", "Sheriff", "Killer", "Crazy",
+    "Citizen", "Mayor", "Sheriff", "Killer", "Snitch", "Crazy",
     "default_role_dict", 
     "verify_role_dict", 
     "assign_roles", 

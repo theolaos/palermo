@@ -93,21 +93,25 @@ class Data:
     players = 4
     day = 0
     amount_roles = {
-        Citizen : 0,
-        Mayor : 0,
-        Sheriff : 0,
         Killer : 0,
         Snitch : 0,
-        Crazy : 0
+        Sheriff : 0,
+        Mayor : 0,
+        Crazy : 0,
+        Citizen : 0,
     }
     generated_roles = False
     pre_assign_roles = []
     assigned_roles = {}
     assigned_players: list[Player] = []
+    dead_players: list[Player] = []
     current_state = None
 
     night_action = False
     night_action_role: Role = None
+
+    overlay = None
+    overlay_open = False
 
 
 class Settings:

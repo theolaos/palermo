@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import random
+
 from functools import partial
 
 from kivy.uix.boxlayout import BoxLayout
@@ -25,6 +27,7 @@ from kivy.clock import Clock
 
 from logic import *
 from script import SoundManager
+
 
 
 class PlayerItem(BoxLayout):
@@ -44,8 +47,12 @@ class PlayerItem(BoxLayout):
     
 
     def vote(self):
-        if Data.current_state in [GamePhase.FIRST_NIGHT, GamePhase.NIGHT] and Data.night_action:
-            if Data.night_action_role == Sheriff:
+        if Data.current_state in [GamePhase.FIRST_NIGHT, GamePhase.NIGHT, GamePhase.VOTING] and Data.night_action:
+            print(Data.night_action_role, self.player, Data.dead_players)
+            if self.player in Data.dead_players:
+                return
+
+            elif Data.night_action_role == Sheriff:
                 if self.player.role == Sheriff:
                     return
 
@@ -56,16 +63,16 @@ class PlayerItem(BoxLayout):
 
                 self.screen.revealed(self.player)
             elif Data.night_action_role == Killer:
-                if self.player.role == Sheriff:
-                    return
                 self.action_button_text = "Killed"
-                self.emoji = "💀"
+                self.default_emoji = "💀"
                 self.bg_color = [0.7, 0.7, 0.7, 0.7]
+
                 self.player.alive = False
 
                 Data.night_action = False
                 
                 self.screen.killed(self.player)
+            
         else:
             self.player.vote += 1
 
@@ -79,8 +86,7 @@ class GameLoop(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.introductory_night = False # turns to True if it happened.
-        self.overlay = None
-        self.overlay_open = False
+
 
         self.stages = None
 
@@ -91,6 +97,9 @@ class GameLoop(Screen):
 
     def on_enter(self):
         Data.day += 1
+        self.index = 0
+        self.clock_event = None
+        self.timer_event = None
 
         container = self.ids.players_container_night
         container.clear_widgets()
@@ -106,6 +115,21 @@ class GameLoop(Screen):
             )
             self.player_item_list.append(item)
             container.add_widget(item)
+
+        self.dead_player_item_list = []
+        for player in Data.dead_players:
+            item = PlayerItem(
+                player=player,
+                screen=self,
+                player_name=player.name,
+                emoji="💀"
+            )
+            item.action_button_text = "Dead"
+            item.bg_color =[0.7, 0.7, 0.7, 0.7]
+            item.show_role_emoji = True
+            item.default_emoji = "💀"
+            self.dead_player_item_list.append(item)
+            container.add_widget(item)            
 
         self.stages = self.choose_stage()
         
@@ -135,85 +159,115 @@ class GameLoop(Screen):
 
 
     def show_overlay(self):
-        if not self.overlay: # dynamic overlay creation
+        if not Data.overlay: # dynamic overlay creation
             from kivy.factory import Factory
-            self.overlay = Factory.LoadingOverlay()
+            Data.overlay = Factory.LoadingOverlay()
         
         # Open the overlay to lock controls and show the text
-        if not self.overlay_open:
-            self.overlay_open = True
-            self.overlay.open()
+        if not Data.overlay_open:
+            Data.overlay_open = True
+            Data.overlay.open()
 
 
     def change_text_overlay(self, new_text: str) -> None:
-        if not self.overlay: # dynamic overlay creation
+        if not Data.overlay: # dynamic overlay creation
             from kivy.factory import Factory
-            self.overlay = Factory.LoadingOverlay()
+            Data.overlay = Factory.LoadingOverlay()
         
         # Open the overlay to lock controls and show the text
-        self.overlay.overlay_text = new_text
+        Data.overlay.overlay_text = new_text
 
     
     def stop_overlay(self):
-        if not self.overlay: # dynamic overlay creation
+        if not Data.overlay: # dynamic overlay creation
             from kivy.factory import Factory
-            self.overlay = Factory.LoadingOverlay()
+            Data.overlay = Factory.LoadingOverlay()
 
-        if self.overlay_open:
-            self.overlay_open = False
-            self.overlay.dismiss()      
+        if Data.overlay_open:
+            Data.overlay_open = False
+            Data.overlay.dismiss()      
 
 
-    def timer_overlay(self, sec, dt=None):
+    def timer_overlay(self, dt, sec, msg="Χρόνος κοιτάγματος:"):
         if not sec - 1 < 0:
-            self.change_text_overlay(f"Χρόνος κοιτάγματος: {sec}")
-            callback = partial(self.timer_overlay, sec - 1)
+            print("Showing timer overlay")
+            self.change_text_overlay(f"{msg} {sec}")
+            self.show_overlay()
+            callback = partial(self.timer_overlay, sec - 1, msg)
             self.timer_event = Clock.schedule_once(callback, 1) 
         else:
-            self.change_text_overlay(f"Χρόνος κοιτάγματος: {sec}")
+            self.change_text_overlay(f"{msg} {sec}")
             self.next_stage()
 
 
     def choice(self, who: Role):
+        if who == Sheriff:
+            for player in Data.dead_players:
+                if player.role == Sheriff:
+                    print("Random timer, because sheriff died")
+                    callback = partial(self.timer_overlay, random.uniform(5.3, 10.3), "Περίμενε")
+                    self.clock_event = Clock.schedule_once(callback, 0)      
+                    return 
+
+        
         for player_item in self.player_item_list:
-            player_item.action_button_text = "Reveal" if who == Sheriff else "Action"
-            player_item.action_button_text = "Kill" if who == Killer else "Action"
+            print("before", player_item.action_button_text, who)
+
+            player_item.action_button_text = "Reveal" if who == Sheriff else "Kill"
             
+            print("after",player_item.action_button_text, who)
+
             Data.night_action = True
             Data.night_action_role = who
 
             if player_item.player.role == Sheriff and who == Sheriff:
+                print("Change Sheriff emoji", player_item.emoji)
                 player_item.bg_color = [0.7, 0.7, 0.7, 0.7]
                 player_item.show_role_emoji = True
                 player_item.action_button_text = "Known"
+
             elif player_item.player.role == Killer and who == Killer:
+                print("Change cop emoji")
                 player_item.bg_color = [0.7, 0.7, 0.7, 0.7]
                 player_item.show_role_emoji = True
                 player_item.action_button_text = "Known"
             
             if not player_item.player.alive:
-                player_item.bg_color = [0.7, 0.7, 0.7, 0.7]
-                player_item.show_role_emoji = False
-                player_item.action_button_text = "Dead"
+                if who == Sheriff:
+                    player_item.show_role_emoji = True
+                player_item.default_emoji = "💀"
 
 
     def clear_list(self):
+        print("cleared")
         for player_item in self.player_item_list:
+            print("cleared:", player_item)
             player_item.action_button_text = "Action"
             player_item.bg_color = [1, 1, 1, 1]
+            player_item.show_role_emoji = False
 
 
     def play_stage(self):
+        print("play_stage index", self.stages[self.index] if self.index < len(self.stages) else "length")
+
         if self.index >= len(self.stages):
-            # self.stop_overlay()
-            Data.current_state = GamePhase.VOTING
+            self.stop_overlay()
+            dead_this_round = [p for p in Data.assigned_players if not p.alive]
+            Data.dead_players.extend(dead_this_round)
+
+            Data.assigned_players = [p for p in Data.assigned_players if p.alive]
+
             self.timer_event = Clock.schedule_once(self.next_screen, 0.7)
             return
 
         stage = self.stages[self.index]
 
         if type(stage) == Wait:
-            callback = partial(self.timer_overlay, stage.sec)
+            params = [stage.sec]
+            if stage.msg:
+                params.append(stage.msg)
+
+            callback = partial(self.timer_overlay, *params)
             self.clock_event = Clock.schedule_once(callback, 0)    
             return
         elif type(stage) == Choice:
@@ -223,6 +277,11 @@ class GameLoop(Screen):
             return
         elif type(stage) == OverlayText:
             self.change_text_overlay(stage.msg)
+            self.next_stage()
+            return
+        elif type(stage) == ClearList:
+            print("ran clear list")
+            self.clear_list()
             self.next_stage()
             return
 
@@ -237,6 +296,7 @@ class GameLoop(Screen):
 
     def next_stage(self, dt=None):
         self.index += 1
+        print("next_stage index", self.stages[self.index] if self.index < len(self.stages) else "length")
         self.play_stage()
 
 

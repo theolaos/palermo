@@ -34,43 +34,114 @@ from .game_loop import GameLoop
 
 class NightScreen(GameLoop):
     def choose_stage(self):
-        self.night_stages = [
-            OverlayText("Νεα νύχτα"),
-            "night_intro",
-            OverlayText("Δολοφόνοι"),
-            "night_start_mafia",
-            "night_mafia_target",
-            Choice(Killer),
-            "night_people_close",
-            OverlayText("Σερίφης"),
-            "night_cop_open",
-            Choice(Sheriff),
-            "night_person_close",
-        ]
+        # self.night_stages = [
+        #     OverlayText("Νεα νύχτα"),
+        #     "night_intro",
+        #     OverlayText("Δολοφόνοι"),
+        #     "night_start_mafia",
+        #     "night_mafia_target",
+        #     Choice(Killer),
+        #     "night_people_close",
+        #     ClearList(),
+        #     OverlayText("Σερίφης"),
+        #     "night_cop_open",
+        #     Choice(Sheriff),
+        #     ClearList(),
+        #     "night_person_close",
+        # ]
+
+        # self.intro_stages = [
+        #     OverlayText("Νεα νύχτα"),
+        #     "night_intro",
+        #     OverlayText("Δολοφόνοι"),
+        #     "night_start_mafia",
+        #     Wait(6.0),
+        #     "night_people_close",
+        #     OverlayText("Προδότης"),
+        #     "intro_spy_mafia",
+        #     Wait(5.0),
+        #     "night_person_close",
+        #     OverlayText("Σερίφης"),
+        #     "night_cop_open",
+        #     Choice(Sheriff),
+        #     # Wait(5.0),
+        #     "night_person_close",
+        #     ClearList(),
+        #     OverlayText("Τρέλα"),
+        #     "intro_madness"
+        # ]
+
+
+        intro_stage_mapping = {
+            Killer: [
+                OverlayText("Δολοφόνοι"),
+                "night_start_mafia",
+                Wait(6.0),
+                "night_people_close"
+            ],
+            Snitch: [
+                OverlayText("Προδότης"),
+                "intro_spy_mafia",
+                Wait(5.0),
+                "night_person_close"
+            ],
+            Crazy: [
+                OverlayText("Τρέλα"),
+                "intro_madness"
+            ]
+        }
+
+        night_stage_mapping = {
+            Killer: [
+                OverlayText("Δολοφόνοι"),
+                "night_start_mafia",
+                "night_mafia_target",
+                Choice(Killer),
+                "night_people_close",
+                ClearList()
+            ],
+            Sheriff: [
+                OverlayText("Σερίφης"),
+                "night_cop_open",
+                Choice(Sheriff),
+                "night_person_close",
+                ClearList()
+            ]
+        }
 
         self.intro_stages = [
             OverlayText("Νεα νύχτα"),
-            "night_intro",
-            OverlayText("Δολοφόνοι"),
-            "night_start_mafia",
-            Wait(6.0),
-            "night_people_close",
-            OverlayText("Προδότης"),
-            "intro_spy_mafia",
-            Wait(5.0),
-            "night_person_close",
-            OverlayText("Σερίφης"),
-            "night_cop_open",
-            Choice(Sheriff),
-            # Wait(5.0),
-            "night_person_close",
-            OverlayText("Τρέλα"),
-            "intro_madness"
+            "night_intro"
         ]
 
-        # for k, v in Data.amount_roles.items():
-        #     if v > 0:
-        #         self.intro_stages = 
+        self.night_stages = [
+            OverlayText("Νεα νύχτα"),
+            "night_intro"
+        ]
 
-        # return self.intro_stages if Data.current_state == GamePhase.FIRST_NIGHT else self.night_stages
-        return self.night_stages
+        for role, amount in Data.amount_roles.items():
+            if amount > 0:
+                # Dynamically build the Intro Stages
+                if role in intro_stage_mapping:
+                    self.intro_stages.extend(intro_stage_mapping[role])
+
+                # Dynamically build the Night Stages
+                if role in night_stage_mapping:
+                    self.night_stages.extend(night_stage_mapping[role])
+
+        print(self.intro_stages, self.night_stages)
+        return self.intro_stages if Data.current_state == GamePhase.FIRST_NIGHT else self.night_stages
+
+        # return self.night_stages
+
+    def next_screen(self, dt=None):
+        if Data.current_state == GamePhase.FIRST_NIGHT:
+            Data.current_state = GamePhase.FIRST_VOTING
+        elif Data.current_state == GamePhase.NIGHT:
+            Data.current_state = GamePhase.VOTING
+        else:
+            print("Wrong game phase")
+            Data.current_state = GamePhase.VOTING
+
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'day_voting_screen'
