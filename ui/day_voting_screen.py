@@ -14,44 +14,56 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from functools import partial
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
-from kivy.properties import StringProperty, ListProperty
+from kivy.uix.modalview import ModalView
 
+from kivy.properties import StringProperty, ListProperty, BooleanProperty, ObjectProperty, ColorProperty
+from kivy.clock import Clock
 
-class DayVotingScreen(Screen):
-    bottom_button = StringProperty("PAUSE")
-    bottom_bg_color = ListProperty((0.2, 0.8, 0.4, 1))
+from logic import *
+from script import SoundManager
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.introductory_night = False # turns to True if it happened.
-    
+from .game_loop import GameLoop
 
-    def on_enter(self):
-        container = self.ids.players_container
-        container.clear_widgets()
-        
-        # create and append the widgets dynamically using python
-        self.role_item_list = []
-        for role in roles_list:
-            item = PlayerItem(
+class DayVotingScreen(GameLoop):
+    def choose_stage(self):
+        self.night_stages = [
+            "night_intro",
+            "night_start_mafia",
+            "night_mafia_target",
+            Choice(Killer),
+            "night_people_close",
+            "night_cop_open",
+            Choice(Sheriff),
+            "night_person_close",
+        ]
 
-            )
-            self.role_item_list.append(item)
-            container.add_widget(item)
+        self.intro_stages = [
+            OverlayText("Νεα νύχτα"),
+            "night_intro",
+            OverlayText("Δολοφόνοι"),
+            "night_start_mafia",
+            Wait(6.0),
+            "night_people_close",
+            OverlayText("Προδότης"),
+            "intro_spy_mafia",
+            Wait(5.0),
+            "night_person_close",
+            OverlayText("Σερίφης"),
+            "night_cop_open",
+            Choice(Sheriff),
+            # Wait(5.0),
+            "night_person_close",
+            OverlayText("Τρέλα"),
+            "intro_madness"
+        ]
 
-        if Data.current_state == GamePhase.FIRST_NIGHT:
-            ...
-            
-        else:
-            ...
-            
+        # for k, v in Data.amount_roles.items():
+        #     if v > 0:
+        #         self.intro_stages = 
 
-    def press_next_day(self):
-        self.transition.direction = 'left'
-        self.current = 'day_voting_screen'        
-        
+        return self.night_stages
 
-class PlayerItem(BoxLayout):
-    ...

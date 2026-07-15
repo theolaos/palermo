@@ -47,6 +47,9 @@ class OverlayText:
 class StartOverlay:...
 
 
+@dataclass
+class ClearList: ...
+
 def create_player_dataclass_list(d: dict[str, Role]) -> list[Player]:
     return [Player(k, v) for k, v in d.items()]
 
